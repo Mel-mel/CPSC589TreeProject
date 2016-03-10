@@ -1,5 +1,5 @@
 EXEFILE = tree
-LIBS = -lglfw -lGL -lGLU
+LIBS = -lglfw -lGL -lGLU -lglut
 
 $(EXEFILE): main.o Tree.o Leaf.o
 	g++ $(LIBS) -o $(EXEFILE) main.o Tree.o Leaf.o 

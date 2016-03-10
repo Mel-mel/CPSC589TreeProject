@@ -2,6 +2,7 @@
 #include <glm/vec2.hpp>
 #include <GL/gl.h>
 #include <GL/glu.h> 
+#include <GL/glut.h>
 #include <iostream>
 #include <vector> 
 #include <cmath> 
@@ -20,6 +21,9 @@ double mouseX, mouseY;
 float yRotate = 0;
 int count = 0; // initial order of user input for dimensions
 int zoom = 1;
+std::string str = "Click again to render first stage!";
+bool getDimensions = true;
+bool doneDimensions = false;
 
 vector<glm::vec2> treeD;
 // leaf span: could possibly use this variable to add slider for amount of leafyness
@@ -58,9 +62,23 @@ void renderBasicHeight()
 		}
 	glEnd();
 	
-	Tree renderTree();
 	
 	
+	
+}
+
+void textButton(int x_pos, int y_pos)
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_TEXTURE_2D);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+	glColor3f(0.9f, 0.9f, 0.7f);
+  	glRasterPos2f(x_pos, y_pos);
+  	for (int i = 0; i < str.length(); i++) 
+	{
+    		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, str[i]);
+  	}
 }
 
 void renderer () {
@@ -78,7 +96,14 @@ void renderer () {
 	//glFrustum for perspective or GLU - gluPerspective
 	
 
-	renderBasicHeight();
+	if(getDimensions == true)
+	{
+		if(doneDimensions == true)
+		{
+			textButton(-0.5f, -0.5f);
+		}
+		renderBasicHeight();
+	}
 }
 
 void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) { // key pressed, action of holding or releasing, mods are if CTRL or SHIFT are being held
@@ -117,7 +142,19 @@ void mouseClick (GLFWwindow *sender, int button, int action, int mods) {
 		{
 			treeD.push_back(glm::vec2(mouseX, mouseY));// leaf span
 			count++;
-		}// count is set to 6 now
+			
+		}
+		else if(count == 6)
+		{
+			doneDimensions = true;
+			count++;
+		}
+		else if(count > 6)
+		{
+			doneDimensions = false; 
+			getDimensions = false;
+		}
+		
 	}
 }
 
@@ -127,10 +164,11 @@ void mousePosition(GLFWwindow *sender, double x, double y){
 
 }
 
-int main () {
+int main (int argc, char** argv) {
 	if(!glfwInit())
 		return 1; // if it is not initialized, exit program
-
+	glutInit(&argc,  argv);
+glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
 	window = glfwCreateWindow(640, 480, "My Window", NULL, NULL); // size and name of window
 	if (!window)
 		return 1;
