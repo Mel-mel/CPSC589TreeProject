@@ -24,11 +24,21 @@ int zoom = 1;
 std::string str = "Click again to render first stage!";
 bool getDimensions = true;
 bool doneDimensions = false;
+bool stageOne = false;
 
 vector<glm::vec2> treeD;
 // leaf span: could possibly use this variable to add slider for amount of leafyness
 
 
+
+
+//Render the first stage of the tree (just the outlines of a tree)
+void firstStage()
+{
+	//Create a new tree
+	Tree aTree(treeD[0], treeD[1], treeD[2], treeD[3]);
+	aTree.renderTreeStageOne();
+}
 
 void renderBasicHeight()
 {
@@ -61,7 +71,6 @@ void renderBasicHeight()
 			glVertex2f(treeD[5].x, treeD[5].y);
 		}
 	glEnd();
-	
 	
 	
 	
@@ -104,6 +113,10 @@ void renderer () {
 		}
 		renderBasicHeight();
 	}
+	if(stageOne == true)
+	{
+		firstStage();
+	} 
 }
 
 void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) { // key pressed, action of holding or releasing, mods are if CTRL or SHIFT are being held
@@ -141,18 +154,19 @@ void mouseClick (GLFWwindow *sender, int button, int action, int mods) {
 		else if(button == GLFW_MOUSE_BUTTON_LEFT && count == 4 || count == 5)
 		{
 			treeD.push_back(glm::vec2(mouseX, mouseY));// leaf span
-			count++;
 			
-		}
-		else if(count == 6)
-		{
-			doneDimensions = true;
+			if (count == 5)
+			{
+				doneDimensions = true;
+			}
 			count++;
 		}
-		else if(count > 6)
+		else if(count > 5)
 		{
+			stageOne = true;
 			doneDimensions = false; 
 			getDimensions = false;
+			
 		}
 		
 	}

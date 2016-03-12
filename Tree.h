@@ -11,11 +11,14 @@ using namespace glm;
 
 class Tree
 {
-	
 public:
+	//Defining variables
+	glm::vec2 heightBase, heightTop, width1, width2;
+	float radius;
 	
-	Tree(vec2 height, vec2 width);
-	void renderTree();
+	//Defining functions
+	Tree(vec2 hBase, vec2 hTop, vec2 w1, vec2 w2);
+	void renderTreeStageOne();
 	//^^whenever the fractal branches off, decrease the radius by some number
 	//In addition, the trunk of tree, define sections by height / num. Make
 	//sure to decrease sections with very small increments
@@ -23,8 +26,7 @@ public:
 	//^^use fractals here too.
 	void applyColor();
 	//void applyBumpMap();//Apply random bitmap to the tree to have to "texture" to it
-	
-private:
-	glm::vec2 height, width;
-	float radius;
+
+	void printvalues();
+	int fractals(int n);
 };
