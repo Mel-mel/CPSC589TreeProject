@@ -28,5 +28,5 @@ public:
 	//void applyBumpMap();//Apply random bitmap to the tree to have to "texture" to it
 
 	void printvalues();
-	int fractals(int n);
+	void fractals(int n);
 };

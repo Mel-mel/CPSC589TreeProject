@@ -136,6 +136,21 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 	{
 		yRotate = yRotate - 15.0f;
 	}
+	if(key == GLFW_KEY_Z && (action == GLFW_PRESS || action == GLFW_REPEAT))
+	{
+		zoom += 1.0f;
+	}
+	if(key == GLFW_KEY_X && (action == GLFW_PRESS || action == GLFW_REPEAT))
+	{
+		if(zoom > 0)
+		{
+			zoom -= 1.0f;
+		}
+		else
+		{
+			zoom = zoom;
+		}
+	}
 }
 
 void mouseClick (GLFWwindow *sender, int button, int action, int mods) {
@@ -183,7 +198,7 @@ int main (int argc, char** argv) {
 		return 1; // if it is not initialized, exit program
 	glutInit(&argc,  argv);
 glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
-	window = glfwCreateWindow(640, 480, "My Window", NULL, NULL); // size and name of window
+	window = glfwCreateWindow(800, 900, "My Window", NULL, NULL); // size and name of window
 	if (!window)
 		return 1;
 
