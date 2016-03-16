@@ -10,7 +10,8 @@
 #include "Tree.h"
 using namespace std; 
 using namespace glm;
-int num = 10; // this will be determined by leaf span given by user
+int num = 4; // this will be determined by leaf span given by user
+int stopPoint = num+1;
 int index = 1;
 float length = 0.5f; //The initial length of the trunk/branch
 
@@ -55,7 +56,7 @@ void Tree::renderTreeStageOne()
 	
 	fractals(index);
 	
-	for(int j = 0; j < splitPoints.size()-2; j++)
+	for(int j = 0; j < splitPoints.size()- stopPoint; j++)
 	{
 		cout << "INDEX  " << j << endl;
 		cout << "x  " << splitPoints[j].x << "  " << "y  " << splitPoints[j].y << endl;
@@ -67,7 +68,7 @@ void Tree::renderTreeStageOne()
 		cout << "x  " << splitPoints[2*j+1].x << "  " << "y  " << splitPoints[2*j+1].y << endl;
 	}
 	
-	for(int i = 1; i < splitPoints.size()-2; i++)
+	for(int i = 1; i < splitPoints.size()- stopPoint; i++)
 	{
 		
 		//First line
@@ -83,7 +84,7 @@ void Tree::renderTreeStageOne()
 	//glBegin(GL_POINTS);
 	glBegin(GL_LINES);
 	glColor3f(0.0f, 1.0f, 0.0f);
-	for(int i = 1; i < splitPoints.size()-2; i++)
+	for(int i = 1; i < splitPoints.size()- stopPoint; i++)
 	{
 		
 		//Second line 
@@ -135,7 +136,7 @@ void Tree::renderTreeStageOne()
 void Tree::fractals(int n)
 {	
 	//The if should exit the function once the last set of branches are drawn...?
-	if(n == 5)
+	if(n == num)
 	{
 		//Left branch
 		vec2 leftTemp = splitPoints[n];
@@ -163,7 +164,7 @@ void Tree::fractals(int n)
 		rightTemp.x = rightTemp.x + x_change;
 		rightTemp.y = rightTemp.y + y_change;
 		splitPoints.push_back(rightTemp);
-		fractals(n+2);
+		fractals(n+1);
 		
 	}
 	/*
@@ -178,11 +179,8 @@ void Tree::fractals(int n)
 		cout << value << endl;
 		return value;
 	}
-
 	*/
 }
-
-
 
 
 
