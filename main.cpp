@@ -25,12 +25,17 @@ std::string str = "Click again to render first stage!";
 bool getDimensions = true;
 bool doneDimensions = false;
 bool stageOne = false;
-
+Tree aTree;
 vector<glm::vec2> treeD;
 // leaf span: could possibly use this variable to add slider for amount of leafyness
 
 
 
+void secondStage()
+{
+	//aTree.initializeCylinders();
+	aTree.renderTreeStageTwo();
+}
 
 //Render the first stage of the tree (just the outlines of a tree)
 void firstStage()
@@ -97,7 +102,7 @@ void renderer () {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	//glRotatef(30.0f, 0.0f, 0.0f, 1.0f);
-	glRotatef(yRotate, 0.0f, 1.0f, 0.0f);//Rotate on the y axis
+	glRotatef(yRotate, 0.0f, 0.0f, 1.0f);//Rotate on the y axis
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -115,7 +120,8 @@ void renderer () {
 	}
 	if(stageOne == true)
 	{
-		firstStage();
+		//firstStage();
+		secondStage();
 	} 
 }
 

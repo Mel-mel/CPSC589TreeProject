@@ -18,6 +18,7 @@ public:
 	
 	//Defining functions
 	Tree(vec2 hBase, vec2 hTop, vec2 w1, vec2 w2);
+	Tree();
 	void renderTreeStageOne();
 	//^^whenever the fractal branches off, decrease the radius by some number
 	//In addition, the trunk of tree, define sections by height / num. Make
@@ -29,4 +30,8 @@ public:
 
 	void printvalues();
 	void fractals(int n);
+	void renderTreeStageTwo();
+	//void initializeCylinders();
+	void renderCylinder(float x1, float y1, float z1, float x2,float y2, float z2, float radius,int subdivisions,GLUquadricObj *quadric);
+	void renderCylinder_convenient(float x1, float y1, float z1, float x2,float y2, float z2, float radius,int subdivisions); 
 };
