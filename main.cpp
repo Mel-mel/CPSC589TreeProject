@@ -1,5 +1,6 @@
 #include <GLFW/glfw3.h>
 #include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
 #include <GL/gl.h>
 #include <GL/glu.h> 
 #include <GL/glut.h>
@@ -9,6 +10,13 @@
 
 #include "Tree.h"
 #include "Leaf.h"
+
+//Defining mao constants to integer values
+#define STAGE_ONE 1
+#define STAGE_TWO 2
+#define STAGE_THREE 3
+#define RESET 4
+
 /*nice colors
 glColor3f(0.2f, 0.6f, 0.5f);
 glColor3f(0.9f, 0.9f, 0.7f);
@@ -25,19 +33,24 @@ std::string str = "Click again to render first stage!";
 bool getDimensions = true;
 bool doneDimensions = false;
 bool stageOne = false;
-
+Tree aTree;
 vector<glm::vec2> treeD;
 // leaf span: could possibly use this variable to add slider for amount of leafyness
 
 
 
+void secondStage()
+{
+	//aTree.initializeCylinders();
+	aTree.renderTreeStageTwo();
+}
 
 //Render the first stage of the tree (just the outlines of a tree)
 void firstStage()
 {
 	//Create a new tree
 	Tree aTree(treeD[0], treeD[1], treeD[2], treeD[3]);
-	aTree.renderTreeStageOne();
+	//aTree.renderTreeStageOne();
 }
 
 void renderBasicHeight()
@@ -97,7 +110,7 @@ void renderer () {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	//glRotatef(30.0f, 0.0f, 0.0f, 1.0f);
-	glRotatef(yRotate, 0.0f, 1.0f, 0.0f);//Rotate on the y axis
+	glRotatef(yRotate, 0.0f, 0.0f, 1.0f);//Rotate on the y axis
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -115,7 +128,10 @@ void renderer () {
 	}
 	if(stageOne == true)
 	{
-		firstStage();
+		//firstStage();
+		//secondStage();
+		Tree aTree2(treeD[0], treeD[1], treeD[2], treeD[3]);
+		aTree2.spaceAlgorithm();
 	} 
 }
 
@@ -192,6 +208,44 @@ void mousePosition(GLFWwindow *sender, double x, double y){
 	mouseY = (-2 * (y / h)) + 1;
 
 }
+/*
+void processMenuEvents(int option)
+{
+	 switch (option)
+	{
+		case STAGE_ONE:
+			stageOne = true;
+			//Include bools for all stages and make sure it's false
+			break;
+		case STAGE_TWO:
+			//stageTwo = true, and everything else is false
+			break;
+		case STAGE_THREE:
+			//stageThree = true, and everything else is false
+			break;
+		case RESET:
+			getDimensions = true;
+			doneDimensions = false;
+			stageOne = false;
+			break;
+	}
+	
+	glutPostRedisplay();
+}
+
+void createDropDownMenu()
+{
+	int menuid = glutCreateMenu(processMenuEvents);
+	
+	//Creating menu entries for each operation
+	glutAddMenuEntry("Render Stage 1", STAGE_ONE);
+	glutAddMenuEntry("Render Stage 2", 	STAGE_TWO);
+	glutAddMenuEntry("Render Stage 3", 	STAGE_THREE);
+	glutAddMenuEntry("Reset tree", RESET);
+	glutAttachMenu(GLUT_RIGHT_BUTTON);//Right click on mouse to open menu
+	glutKeyboardFunc(keyboard);
+}*/
+
 
 int main (int argc, char** argv) {
 	if(!glfwInit())
@@ -206,6 +260,7 @@ glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
 	glfwSetKeyCallback(window, keyboard);	
 	glfwSetMouseButtonCallback(window, mouseClick);
 	glfwSetCursorPosCallback(window, mousePosition);
+	//createDropDownMenu();
 	while(!glfwWindowShouldClose(window)) { // while not exited
 		glfwGetFramebufferSize(window, &w, &h);
 		glViewport(0, 0, w, h);
