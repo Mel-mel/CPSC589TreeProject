@@ -1,4 +1,5 @@
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <GL/gl.h>
@@ -6,6 +7,7 @@
 #include <iostream>
 #include <vector> 
 #include <cmath> 
+#include <random>
 
 #include "Leaf.h"
 #include "Tree.h"
@@ -17,16 +19,22 @@ int index = 1;
 float length = 0.5f; //The initial length of the trunk/branch
 float theta = M_PI/6;
 float temp = 0.5f;
+float numOfBranches = 100;
 
 //Values to change how the branches are drawn
 float x_change = 0.1f;
 float y_change = 0.1f;
 
-float radiusInfluence = 0.3;	//This radius ensures that the branches dont go off to infinity
+float radiusInfluence = 5.0f;	//If a trunk node has a close neighbor to some branch point
+float killRadius = 2.0f;		//If a trunk node is too close to a branch point then that branch point will get removed
+float maxValue = 5.0f;
+float minValue = -5.0f;
 
 vector<glm::vec2> splitPoints; // keeps track of point where one branch becomes two 
 vector<glm::vec3> allPoints;	//This is for the space algorithm to store all trunk, branch, and connected points
-vector<glm::vec3> branchPoints; //Contains only branch points (from user input?)
+vector<glm::vec3> neighbors; //Contains only branch points (from user input?)
+vector<glm::vec3> randBranch;
+vector<glm::vec3> holding;
 
 GLUquadricObj *quadratic;
 
@@ -41,7 +49,7 @@ Tree::Tree()
 	//Blank initializer
 }
 
-//This is the constructor for a tree (need to find the radius later)
+//This is the constructor for a tree (need to find the radius later. make into vec3 later)
 Tree::Tree(vec2 hBase, vec2 hTop, vec2 w1, vec2 w2)
 {
 	heightBase = hBase;
@@ -74,6 +82,11 @@ Tree::Tree(vec2 hBase, vec2 hTop, vec2 w1, vec2 w2)
 	
 }
 
+void Tree::setValues(vec3 hBase, vec3 hTop, vec3 w1, vec3 w2)
+{
+	
+}
+
 //The following two functions below were used to create a custom cylinder based on this website
 //http://lifeofaprogrammergeek.blogspot.ca/2008/07/rendering-cylinder-between-two-points.html
 //Accessed on Mar 17, 2016 (do the proper citing later~)
@@ -94,6 +107,7 @@ void Tree::renderCylinder(float x1, float y1, float z1, float x2,float y2, float
 		ax = -ax;
 	float rx = -vy*vz;
 	float ry = vx*vz;
+	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 
 	//draw the cylinder body
@@ -283,22 +297,75 @@ void Tree::fractals(int n)
 	
 }	
 
+//Call this every time a new tree node is added to allPoints
+void Tree::genRandomBranch()
+{
+	randBranch.clear();
+    srand(time(NULL));
+    for (int i = 0; i < numOfBranches; i++)
+    {
+        float randX = ((float)rand() / (float)(RAND_MAX)) * (maxValue - minValue) + minValue;
+        float randY = ((float)rand() / (float)(RAND_MAX)) * maxValue;
+        float randZ = ((float)rand() / (float)(RAND_MAX)) * (maxValue - minValue) + minValue;
+     
+		//Make sure that the branches are at least above the highest trunk point
+		if(randY <= 2.0f)
+		{
+			 randY += 1.0f;
+		}
+        randBranch.push_back({ randX, randY, randZ });
+        holding.push_back({randX, randY, randZ});
+      //  cout << randX << " " << randY << " " << randZ << endl;
+    }
+}
+
 void Tree::drawTree()
 {
+	/*glBegin(GL_POINTS);
+	glColor3f(1.0f, 0.0f, 0.0f);
+	for (int j = 0; j < holding.size(); j++)
+	{
+		glVertex3f(holding[j].x, holding[j].y, holding[j].z);
+	}
+	glEnd();*/
+	//glLineWidth(3.0f);
+	
+	glBegin(GL_POINTS);
+	glColor3f(0.0f, 1.0f, 0.0f);
+	for(int i = 0; i < allPoints.size(); i++)
+	{
+		glVertex3f(allPoints[i].x, allPoints[i].y, allPoints[i].z);
+		//cout << allPoints[i].x << " " << allPoints[i].y << " " << allPoints[i].z << endl;
+	}
+	
+	
+	glEnd();
+	
 	glBegin(GL_LINES);
 	glColor3f(0.0f, 0.5f, 0.8f);
-	for(int p = 0; p < allPoints.size(); p += 1)
+	for(int p = 0; p < 20; p += 1)
 	{
-		//Problem MIGHT occur here. loops every p+=1 rather than p+=2. drawing might look odd after
-		//further implementation
+		//cout << "\nIndex  " << p << endl;
+		//cout << allPoints[p].x << " " << allPoints[p].y << " " << allPoints[p].z << endl;
+		/*Just an idea
+		 * get the distance of neighboring points in allpoints. If a tree node is within a radius
+		 * then draw a line from that tree node to the nearby node. 
+		 * can either split the allpoints in space algorithm into two separate vector arrays.
+		 * One with the original trunk and the other one will all new nodes. might make the 
+		 * tree look a bit odd but it's just an idea
+		 */ 
 		glVertex3f(allPoints[p].x, allPoints[p].y, allPoints[p].z);
 		glVertex3f(allPoints[p+1].x, allPoints[p+1].y, allPoints[p+1].z);
+		
+		//glVertex3f(allPoints[p].x, allPoints[p].y, allPoints[p].z);
+		//glVertex3f(allPoints[2*p+1].x, allPoints[2*p+1].y, allPoints[2*p+1].z);
 	}
 	glEnd();
 	
-	allPoints.clear();
+	//allPoints.clear();
 }
 
+//Initializing the trunk points with 6 points (to start off) this would need the user input later
 void Tree::initTrunk()
 {
 	float x, y, z, value;
@@ -308,7 +375,7 @@ void Tree::initTrunk()
 	value = 0.25f;
 	
 	vec3 temp(x, y, z);
-	//Initializing the trunk points with 6 points (to start off)
+	
 	for(int l = 0; l < 6; l++)
 	{
 		allPoints.push_back(temp);
@@ -317,18 +384,134 @@ void Tree::initTrunk()
 		cout << allPoints[l].y << endl;
 		cout << allPoints[l].z << endl;*/
 	}
-	
-	//The branch points should be coming from the user but for testing it's hardcoded for now
-	branchPoints.push_back(vec3(-0.5f, -0.25f, 0.25f);
-	branchPoints.push_back(vec3(-0.25f, 0.75f, 0.5f);
-	branchPoints.push_back(vec3(0.3f, 0.55f, -0.25f);
-	branchPoints.push_back(vec3(0.5f, -0.25f, -0.25f);
 }
 
+/*After adding a new tree node, this for loop checks which trunk points in allPoints are within a 
+ * killRadius that a branch point has. If the trunk point is within that radius of some branch
+ * point then that branch point is removed.  
+ */ 
+void Tree::removeBranches()
+{
+	float x, y, z, distance;
+	
+	for (int i = 0; i < allPoints.size(); i++)
+	{
+		for (int j = 0; j < randBranch.size(); j++)
+		{
+			//Get distance from a trunk point to a branch point
+			x = allPoints[i].x - randBranch[j].x;
+			y = allPoints[i].y - randBranch[j].y;
+			z = allPoints[i].z - randBranch[j].z;
+			
+			x = x * x;
+			y = y * y;
+			z = z * z;
+			
+			distance = x + y + z;
+			distance = sqrt(distance);
+			
+			if(killRadius > distance)
+			{
+				randBranch.erase(randBranch.begin() + j);
+			}
+			else 
+			{
+				continue;
+			}
+		}
+	}
+}
+
+//Calculates the total sum of branch and trunk points
+vec3 Tree::avgNormals()
+{
+	vec3 normal, totalNormals;
+	for(int i = 0; i < neighbors.size(); i+=2)
+	{
+		normal = normalize(neighbors[i+1] - neighbors[i]);//Branch point - trunk point
+		totalNormals = totalNormals + normal;
+	}
+	
+	//Get length of totalNormals to normalize totalNormals
+	float x = totalNormals.x * totalNormals.x;
+	float y = totalNormals.y * totalNormals.y;
+	float z = totalNormals.z * totalNormals.z;
+	float length = x + y + z;
+	length = sqrt(length);
+	
+	return totalNormals / length;
+}
+
+/*The nested loop simply adds new tree nodes to allPoints (which have some points initialized
+ * to it already). It determines any branch points that are closest to a trunk point in allPoints
+ * and calculates the direction of those points. In turn, it determines the new position of the tree 
+ * node by averaging the normals of all nearby branch points which is then added into allPoints
+ */
 void Tree::spaceAlgorithm()
 {
-	initTrunk();
+	float currDist, tempX, tempY, tempZ;
+	int i, j, shortIndex;
+		
+	for(i = 0; i < allPoints.size(); i++)
+	{
+		for(j = 0; j < randBranch.size(); j++)
+		{
+			float x = allPoints[i].x - randBranch[j].x;
+			float y = allPoints[i].y - randBranch[j].y;
+			float z = allPoints[i].z - randBranch[j].z;
+			
+			x = x * x;
+			y = y * y;
+			z = z * z;
+			
+			float length = x + y + z;
+			currDist = sqrt(length);
+			//cout << currDist << endl;
+			
+			/*The current trunk point in allPoints is within the radius of influence of a branch point.
+			 * If the radiusInfluence is greater than the currDist then that means the current
+			 * trunk point is one of the closest neighbors to a branch point.*/
+			if(radiusInfluence > currDist)
+			{	
+				neighbors.push_back(allPoints[i]);
+				neighbors.push_back(randBranch[j]);
+				
+			}
+		}
+		if(!neighbors.empty())
+		{
+			vec3 norm = avgNormals();
+			/*cout << endl;
+			cout << "avgNormals" << endl;
+			cout << norm.x << endl;
+			cout << norm.y << endl;
+			cout << norm.z << endl;*/
+			
+			//There might be a problem with currDist since it might not be the value going from v to v'
+			//Should fix this or look over again
+			norm = allPoints[i] + (1.5f * norm);
+			/*cout << endl;
+			cout << "newTreeNode" << endl;
+			cout << norm.x << endl;
+			cout << norm.y << endl;
+			cout << norm.z << endl;
+			cout << endl;*/
+			allPoints.push_back(norm);
+			neighbors.clear();
+			
+			//Removes any branches that are withing a trunk point (re-word later)~~~
+			removeBranches();
+		}
+	}
 	
+	/*for (int k = 0; k < allPoints.size(); k++)
+	{
+		cout << endl;
+		cout << "index k " << k << endl;
+		cout << allPoints[k].x << " " << allPoints[k].y << " " << allPoints[k].z << endl;
+	}*?
+	
+	//IMPORTANT SIDE NOTE: When randBranch becomes null, that's when the algorithm terminates.
 	
 	/*PSEUDOCODE (not complete...)
 	 * dist = default distance value
@@ -344,8 +527,6 @@ void Tree::spaceAlgorithm()
 	 *     end
 	 * end
 	 */
-	 
-	//drawTree();
 }
 	
 

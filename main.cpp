@@ -110,7 +110,7 @@ void renderer () {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	//glRotatef(30.0f, 0.0f, 0.0f, 1.0f);
-	glRotatef(yRotate, 0.0f, 0.0f, 1.0f);//Rotate on the y axis
+	glRotatef(yRotate, 0.0f, 1.0f, 0.0f);//Rotate on the y axis
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -130,8 +130,10 @@ void renderer () {
 	{
 		//firstStage();
 		//secondStage();
-		Tree aTree2(treeD[0], treeD[1], treeD[2], treeD[3]);
-		aTree2.spaceAlgorithm();
+		//Tree aTree2(treeD[0], treeD[1], treeD[2], treeD[3]);
+		//aTree2.spaceAlgorithm();
+		//aTree.spaceAlgorithm();
+		aTree.drawTree();
 	} 
 }
 
@@ -246,6 +248,14 @@ void createDropDownMenu()
 	glutKeyboardFunc(keyboard);
 }*/
 
+void init()
+{
+	Tree aTree;
+	aTree.initTrunk();
+	aTree.genRandomBranch();
+	aTree.spaceAlgorithm();
+	
+}
 
 int main (int argc, char** argv) {
 	if(!glfwInit())
@@ -261,6 +271,7 @@ glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
 	glfwSetMouseButtonCallback(window, mouseClick);
 	glfwSetCursorPosCallback(window, mousePosition);
 	//createDropDownMenu();
+	init();
 	while(!glfwWindowShouldClose(window)) { // while not exited
 		glfwGetFramebufferSize(window, &w, &h);
 		glViewport(0, 0, w, h);

@@ -6,3 +6,13 @@
 #include <iostream>
 #include <vector> 
 #include <cmath> 
+
+#include "Leaf.h"
+#include "Tree.h"
+
+float some;
+
+void Leaf::something(float x)
+{
+	some = x;
+}

@@ -36,8 +36,13 @@ public:
 	void renderCylinder(float x1, float y1, float z1, float x2,float y2, float z2, float radius,int subdivisions,GLUquadricObj *quadric);
 	void renderCylinder_convenient(float x1, float y1, float z1, float x2,float y2, float z2, float radius,int subdivisions); 
 	
+	void setValues(vec3 hBase, vec3 hTop, vec3 w1, vec3 w2);
+	
 	void spaceAlgorithm();
 	void initTrunk();
 	void drawTree();
-
+	void genRandomBranch();
+	vec3 avgNormals();
+	void removeBranches();
+	
 };

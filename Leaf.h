@@ -6,3 +6,10 @@
 #include <iostream>
 #include <vector> 
 #include <cmath> 
+
+class Leaf
+{
+	public:
+	void something(float x);
+	
+};
