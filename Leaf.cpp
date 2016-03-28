@@ -31,18 +31,19 @@ Leaf::Leaf()
 	
 }
 
-void Leaf::drawLeaf(float x_start, float y_start, float z_start)
+void Leaf::drawLeaf(float x, float y, float z)
 {
-	x_start = z_start = 0;
-	y_start = -0.5;// make it so that the point is being passed in, not hard coded
+	x_start = x;
+	y_start = y;
+	z_start = z;
 	
-	x_delta = y_delta = z_delta = 0.1;
-	stem_length = 0.1;
+	x_delta = y_delta = z_delta = 0.05;
+	stem_length = 0.05;
 	
 	splitLeafPoints.push_back(vec3(x_start, y_start, z_start));
-	splitLeafPoints.push_back(vec3(x_start, y_start + y_delta, z_start + z_delta));	
+	splitLeafPoints.push_back(vec3(x_start, y_start + stem_length, z_start + z_delta));	
 	
-	glRotatef(30.0f, 0.0, 1.0, 0.0); // variable degree of rotation to change the orientation
+	//glRotatef(30.0f, 0.0, 1.0, 0.0); // variable degree of rotation to change the orientation
 	glBegin(GL_LINES);
 	glColor3f(0.184f, 0.409f, 0.184f);
 	glVertex3f(splitLeafPoints[0].x, splitLeafPoints[0].y, splitLeafPoints[0].z);
@@ -52,55 +53,37 @@ void Leaf::drawLeaf(float x_start, float y_start, float z_start)
 	fractals(start_index);
 	
 	glBegin(GL_POLYGON);
-	for(int i = 1; i < 8; i+=3)
-	{
-		glColor3f(0.184f, 0.409f, 0.184f);
-		glVertex3f(splitLeafPoints[i].x, splitLeafPoints[i].y, splitLeafPoints[i].z);
-		glVertex3f(splitLeafPoints[i+1].x, splitLeafPoints[i+1].y, splitLeafPoints[i+1].z);
-		
-		glVertex3f(splitLeafPoints[i+1].x, splitLeafPoints[i+1].y, splitLeafPoints[i+1].z);
-		glVertex3f(splitLeafPoints[i+4].x, splitLeafPoints[i+4].y, splitLeafPoints[i+4].z);
-		
-		glVertex3f(splitLeafPoints[i+4].x, splitLeafPoints[i+4].y, splitLeafPoints[i+4].z);
-		glVertex3f(splitLeafPoints[i+3].x, splitLeafPoints[i+3].y, splitLeafPoints[i+3].z);
-		
-		glVertex3f(splitLeafPoints[i+3].x, splitLeafPoints[i+3].y, splitLeafPoints[i+3].z);
-		glVertex3f(splitLeafPoints[i].x, splitLeafPoints[i].y, splitLeafPoints[i].z);
-		
-		glVertex3f(splitLeafPoints[i].x, splitLeafPoints[i].y, splitLeafPoints[i].z);
-		glVertex3f(splitLeafPoints[i+2].x, splitLeafPoints[i+2].y, splitLeafPoints[i+2].z);
-		
-		glVertex3f(splitLeafPoints[i+2].x, splitLeafPoints[i+2].y, splitLeafPoints[i+2].z);
-		glVertex3f(splitLeafPoints[i+5].x, splitLeafPoints[i+5].y, splitLeafPoints[i+5].z);
-		
-		glVertex3f(splitLeafPoints[i+5].x, splitLeafPoints[i+5].y, splitLeafPoints[i+5].z);
-		glVertex3f(splitLeafPoints[i+3].x, splitLeafPoints[i+3].y, splitLeafPoints[i+3].z);
-		
-		glVertex3f(splitLeafPoints[i+3].x, splitLeafPoints[i+3].y, splitLeafPoints[i+3].z);
-		glVertex3f(splitLeafPoints[i].x, splitLeafPoints[i].y, splitLeafPoints[i].z);
-	}
-	glEnd();
-	
-	glBegin(GL_POLYGON);
 	glColor3f(0.184f, 0.409f, 0.184f);
-	glVertex3f(splitLeafPoints[splitLeafPoints.size()-4].x, splitLeafPoints[splitLeafPoints.size()-4].y, splitLeafPoints[splitLeafPoints.size()-4].z);
-	glVertex3f(splitLeafPoints[splitLeafPoints.size()-1].x, splitLeafPoints[splitLeafPoints.size()-1].y, splitLeafPoints[splitLeafPoints.size()-1].z);
+	int i = start_index;
+	glVertex3f(splitLeafPoints[i].x, splitLeafPoints[i].y, splitLeafPoints[i].z);
+	glVertex3f(splitLeafPoints[i+9].x, splitLeafPoints[i+9].y, splitLeafPoints[i+9].z);
 	
-	glVertex3f(splitLeafPoints[splitLeafPoints.size()-1].x, splitLeafPoints[splitLeafPoints.size()-1].y, splitLeafPoints[splitLeafPoints.size()-1].z);
-	glVertex3f(splitLeafPoints[splitLeafPoints.size()-3].x, splitLeafPoints[splitLeafPoints.size()-3].y, splitLeafPoints[splitLeafPoints.size()-3].z);
+	glVertex3f(splitLeafPoints[i+9].x, splitLeafPoints[i+9].y, splitLeafPoints[i+9].z);
+	glVertex3f(splitLeafPoints[i+7].x, splitLeafPoints[i+7].y, splitLeafPoints[i+7].z);
 	
-	glVertex3f(splitLeafPoints[splitLeafPoints.size()-3].x, splitLeafPoints[splitLeafPoints.size()-3].y, splitLeafPoints[splitLeafPoints.size()-3].z);
-	glVertex3f(splitLeafPoints[splitLeafPoints.size()-4].x, splitLeafPoints[splitLeafPoints.size()-4].y, splitLeafPoints[splitLeafPoints.size()-4].z);
+	glVertex3f(splitLeafPoints[i+7].x, splitLeafPoints[i+7].y, splitLeafPoints[i+7].z);
+	glVertex3f(splitLeafPoints[i+4].x, splitLeafPoints[i+4].y, splitLeafPoints[i+4].z);
 	
-	glVertex3f(splitLeafPoints[splitLeafPoints.size()-4].x, splitLeafPoints[splitLeafPoints.size()-4].y, splitLeafPoints[splitLeafPoints.size()-4].z);
-	glVertex3f(splitLeafPoints[splitLeafPoints.size()-1].x, splitLeafPoints[splitLeafPoints.size()-1].y, splitLeafPoints[splitLeafPoints.size()-1].z);
+	glVertex3f(splitLeafPoints[i+4].x, splitLeafPoints[i+4].y, splitLeafPoints[i+4].z);
+	glVertex3f(splitLeafPoints[i+1].x, splitLeafPoints[i+1].y, splitLeafPoints[i+1].z);
 	
-	glVertex3f(splitLeafPoints[splitLeafPoints.size()-1].x, splitLeafPoints[splitLeafPoints.size()-1].y, splitLeafPoints[splitLeafPoints.size()-1].z);
-	glVertex3f(splitLeafPoints[splitLeafPoints.size()-2].x, splitLeafPoints[splitLeafPoints.size()-2].y, splitLeafPoints[splitLeafPoints.size()-2].z);
+	glVertex3f(splitLeafPoints[i+1].x, splitLeafPoints[i+1].y, splitLeafPoints[i+1].z);
+	glVertex3f(splitLeafPoints[i].x, splitLeafPoints[i].y, splitLeafPoints[i].z);
 	
-	glVertex3f(splitLeafPoints[splitLeafPoints.size()-2].x, splitLeafPoints[splitLeafPoints.size()-2].y, splitLeafPoints[splitLeafPoints.size()-2].z);
-	glVertex3f(splitLeafPoints[splitLeafPoints.size()-4].x, splitLeafPoints[splitLeafPoints.size()-4].y, splitLeafPoints[splitLeafPoints.size()-4].z);
+	glVertex3f(splitLeafPoints[i].x, splitLeafPoints[i].y, splitLeafPoints[i].z);
+	glVertex3f(splitLeafPoints[i+9].x, splitLeafPoints[i+9].y, splitLeafPoints[i+9].z);
 	
+	glVertex3f(splitLeafPoints[i+9].x, splitLeafPoints[i+9].y, splitLeafPoints[i+9].z);
+	glVertex3f(splitLeafPoints[i+8].x, splitLeafPoints[i+8].y, splitLeafPoints[i+8].z);
+	
+	glVertex3f(splitLeafPoints[i+8].x, splitLeafPoints[i+8].y, splitLeafPoints[i+8].z);
+	glVertex3f(splitLeafPoints[i+5].x, splitLeafPoints[i+5].y, splitLeafPoints[i+5].z);
+	
+	glVertex3f(splitLeafPoints[i+5].x, splitLeafPoints[i+5].y, splitLeafPoints[i+5].z);
+	glVertex3f(splitLeafPoints[i+2].x, splitLeafPoints[i+2].y, splitLeafPoints[i+2].z);
+	
+	glVertex3f(splitLeafPoints[i+2].x, splitLeafPoints[i+2].y, splitLeafPoints[i+2].z);
+	glVertex3f(splitLeafPoints[i].x, splitLeafPoints[i].y, splitLeafPoints[i].z);
 	glEnd();
 	
 	glBegin(GL_LINES);
@@ -121,7 +104,7 @@ void Leaf::drawLeaf(float x_start, float y_start, float z_start)
 	splitLeafPoints.clear();
 }
 
-void Leaf::drawLargeLeaf()
+void Leaf::drawGenericLeaf()
 {
 	x_start = z_start = 0;
 	y_start = -0.5;
@@ -130,7 +113,7 @@ void Leaf::drawLargeLeaf()
 	stem_length = 0.1;
 	
 	splitLeafPoints.push_back(vec3(x_start, y_start, z_start));
-	splitLeafPoints.push_back(vec3(x_start, y_start + y_delta, z_start + z_delta));	
+	splitLeafPoints.push_back(vec3(x_start, y_start + stem_length, z_start + z_delta));	
 	
 	glBegin(GL_LINES);
 	glColor3f(0.184f, 0.409f, 0.184f);
@@ -141,55 +124,37 @@ void Leaf::drawLargeLeaf()
 	fractals(start_index);
 	
 	glBegin(GL_POLYGON);
-	for(int i = 1; i < 8; i+=3)
-	{
-		glColor3f(0.184f, 0.409f, 0.184f);
-		glVertex3f(splitLeafPoints[i].x, splitLeafPoints[i].y, splitLeafPoints[i].z);
-		glVertex3f(splitLeafPoints[i+1].x, splitLeafPoints[i+1].y, splitLeafPoints[i+1].z);
-		
-		glVertex3f(splitLeafPoints[i+1].x, splitLeafPoints[i+1].y, splitLeafPoints[i+1].z);
-		glVertex3f(splitLeafPoints[i+4].x, splitLeafPoints[i+4].y, splitLeafPoints[i+4].z);
-		
-		glVertex3f(splitLeafPoints[i+4].x, splitLeafPoints[i+4].y, splitLeafPoints[i+4].z);
-		glVertex3f(splitLeafPoints[i+3].x, splitLeafPoints[i+3].y, splitLeafPoints[i+3].z);
-		
-		glVertex3f(splitLeafPoints[i+3].x, splitLeafPoints[i+3].y, splitLeafPoints[i+3].z);
-		glVertex3f(splitLeafPoints[i].x, splitLeafPoints[i].y, splitLeafPoints[i].z);
-		
-		glVertex3f(splitLeafPoints[i].x, splitLeafPoints[i].y, splitLeafPoints[i].z);
-		glVertex3f(splitLeafPoints[i+2].x, splitLeafPoints[i+2].y, splitLeafPoints[i+2].z);
-		
-		glVertex3f(splitLeafPoints[i+2].x, splitLeafPoints[i+2].y, splitLeafPoints[i+2].z);
-		glVertex3f(splitLeafPoints[i+5].x, splitLeafPoints[i+5].y, splitLeafPoints[i+5].z);
-		
-		glVertex3f(splitLeafPoints[i+5].x, splitLeafPoints[i+5].y, splitLeafPoints[i+5].z);
-		glVertex3f(splitLeafPoints[i+3].x, splitLeafPoints[i+3].y, splitLeafPoints[i+3].z);
-		
-		glVertex3f(splitLeafPoints[i+3].x, splitLeafPoints[i+3].y, splitLeafPoints[i+3].z);
-		glVertex3f(splitLeafPoints[i].x, splitLeafPoints[i].y, splitLeafPoints[i].z);
-	}
-	glEnd();
-	
-	glBegin(GL_POLYGON);
 	glColor3f(0.184f, 0.409f, 0.184f);
-	glVertex3f(splitLeafPoints[splitLeafPoints.size()-4].x, splitLeafPoints[splitLeafPoints.size()-4].y, splitLeafPoints[splitLeafPoints.size()-4].z);
-	glVertex3f(splitLeafPoints[splitLeafPoints.size()-1].x, splitLeafPoints[splitLeafPoints.size()-1].y, splitLeafPoints[splitLeafPoints.size()-1].z);
+	int i = start_index;
+	glVertex3f(splitLeafPoints[i].x, splitLeafPoints[i].y, splitLeafPoints[i].z);
+	glVertex3f(splitLeafPoints[i+9].x, splitLeafPoints[i+9].y, splitLeafPoints[i+9].z);
 	
-	glVertex3f(splitLeafPoints[splitLeafPoints.size()-1].x, splitLeafPoints[splitLeafPoints.size()-1].y, splitLeafPoints[splitLeafPoints.size()-1].z);
-	glVertex3f(splitLeafPoints[splitLeafPoints.size()-3].x, splitLeafPoints[splitLeafPoints.size()-3].y, splitLeafPoints[splitLeafPoints.size()-3].z);
+	glVertex3f(splitLeafPoints[i+9].x, splitLeafPoints[i+9].y, splitLeafPoints[i+9].z);
+	glVertex3f(splitLeafPoints[i+7].x, splitLeafPoints[i+7].y, splitLeafPoints[i+7].z);
 	
-	glVertex3f(splitLeafPoints[splitLeafPoints.size()-3].x, splitLeafPoints[splitLeafPoints.size()-3].y, splitLeafPoints[splitLeafPoints.size()-3].z);
-	glVertex3f(splitLeafPoints[splitLeafPoints.size()-4].x, splitLeafPoints[splitLeafPoints.size()-4].y, splitLeafPoints[splitLeafPoints.size()-4].z);
+	glVertex3f(splitLeafPoints[i+7].x, splitLeafPoints[i+7].y, splitLeafPoints[i+7].z);
+	glVertex3f(splitLeafPoints[i+4].x, splitLeafPoints[i+4].y, splitLeafPoints[i+4].z);
 	
-	glVertex3f(splitLeafPoints[splitLeafPoints.size()-4].x, splitLeafPoints[splitLeafPoints.size()-4].y, splitLeafPoints[splitLeafPoints.size()-4].z);
-	glVertex3f(splitLeafPoints[splitLeafPoints.size()-1].x, splitLeafPoints[splitLeafPoints.size()-1].y, splitLeafPoints[splitLeafPoints.size()-1].z);
+	glVertex3f(splitLeafPoints[i+4].x, splitLeafPoints[i+4].y, splitLeafPoints[i+4].z);
+	glVertex3f(splitLeafPoints[i+1].x, splitLeafPoints[i+1].y, splitLeafPoints[i+1].z);
 	
-	glVertex3f(splitLeafPoints[splitLeafPoints.size()-1].x, splitLeafPoints[splitLeafPoints.size()-1].y, splitLeafPoints[splitLeafPoints.size()-1].z);
-	glVertex3f(splitLeafPoints[splitLeafPoints.size()-2].x, splitLeafPoints[splitLeafPoints.size()-2].y, splitLeafPoints[splitLeafPoints.size()-2].z);
+	glVertex3f(splitLeafPoints[i+1].x, splitLeafPoints[i+1].y, splitLeafPoints[i+1].z);
+	glVertex3f(splitLeafPoints[i].x, splitLeafPoints[i].y, splitLeafPoints[i].z);
 	
-	glVertex3f(splitLeafPoints[splitLeafPoints.size()-2].x, splitLeafPoints[splitLeafPoints.size()-2].y, splitLeafPoints[splitLeafPoints.size()-2].z);
-	glVertex3f(splitLeafPoints[splitLeafPoints.size()-4].x, splitLeafPoints[splitLeafPoints.size()-4].y, splitLeafPoints[splitLeafPoints.size()-4].z);
+	glVertex3f(splitLeafPoints[i].x, splitLeafPoints[i].y, splitLeafPoints[i].z);
+	glVertex3f(splitLeafPoints[i+9].x, splitLeafPoints[i+9].y, splitLeafPoints[i+9].z);
 	
+	glVertex3f(splitLeafPoints[i+9].x, splitLeafPoints[i+9].y, splitLeafPoints[i+9].z);
+	glVertex3f(splitLeafPoints[i+8].x, splitLeafPoints[i+8].y, splitLeafPoints[i+8].z);
+	
+	glVertex3f(splitLeafPoints[i+8].x, splitLeafPoints[i+8].y, splitLeafPoints[i+8].z);
+	glVertex3f(splitLeafPoints[i+5].x, splitLeafPoints[i+5].y, splitLeafPoints[i+5].z);
+	
+	glVertex3f(splitLeafPoints[i+5].x, splitLeafPoints[i+5].y, splitLeafPoints[i+5].z);
+	glVertex3f(splitLeafPoints[i+2].x, splitLeafPoints[i+2].y, splitLeafPoints[i+2].z);
+	
+	glVertex3f(splitLeafPoints[i+2].x, splitLeafPoints[i+2].y, splitLeafPoints[i+2].z);
+	glVertex3f(splitLeafPoints[i].x, splitLeafPoints[i].y, splitLeafPoints[i].z);
 	glEnd();
 	
 	glBegin(GL_LINES);

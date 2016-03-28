@@ -20,7 +20,7 @@ int w, h;
 double mouseX, mouseY;
 float yRotate = 0;
 int count = 0; // initial order of user input for dimensions
-int zoom = 1;
+float zoom = 1;
 std::string str = "Click again to render first stage!";
 bool getDimensions = true;
 bool doneDimensions = false;
@@ -149,13 +149,13 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 	}
 	if(key == GLFW_KEY_Z && (action == GLFW_PRESS || action == GLFW_REPEAT))
 	{
-		zoom += 1.0f;
+		zoom += 0.1f;
 	}
 	if(key == GLFW_KEY_X && (action == GLFW_PRESS || action == GLFW_REPEAT))
 	{
 		if(zoom > 0)
 		{
-			zoom -= 1.0f;
+			zoom -= 0.1f;
 		}
 		else
 		{

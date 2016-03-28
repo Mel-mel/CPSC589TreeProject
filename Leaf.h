@@ -14,8 +14,8 @@ class Leaf
 public:
 
 	Leaf();
-	void drawLeaf(float x_start, float y_start, float z_start);
-	void drawLargeLeaf();
+	void drawLeaf(float x, float y, float z);
+	void drawGenericLeaf();
 	void fractals(int n);
 	//void fractalsReverse(int n);
 	//void reverseArray();

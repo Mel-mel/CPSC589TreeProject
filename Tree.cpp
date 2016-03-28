@@ -62,7 +62,7 @@ void Tree::renderTreeStageThree() // adding the leaves
 
 	//}
 	
-	aLeaf.drawLargeLeaf();
+	aLeaf.drawLeaf(0,0,0);
 	
 }
 
