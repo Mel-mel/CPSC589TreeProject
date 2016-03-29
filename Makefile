@@ -9,7 +9,7 @@ main.o: main.cpp
 	
 
 Tree.o: Tree.cpp Tree.h
-	g++ -c Tree.cpp
+	g++ -std=c++11 -c Tree.cpp
 	
 Leaf.o: Leaf.cpp Leaf.h
 	g++ -c Leaf.cpp
