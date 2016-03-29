@@ -1,0 +1,201 @@
+vec3 norm = avgNormals();
+			for (int l = 0; l < vertexDist.size(); l++)
+			{
+				norm = allPoints[i] + (vertexDist[l] * norm);
+				allPoints.push_back(norm);
+				cout << endl;
+				cout << "newTreeNode" << endl;
+				cout << norm.x << endl;
+				cout << norm.y << endl;
+				cout << norm.z << endl;
+				cout << endl;
+			} 
+			norm = allPoints[i] + (1.5f * norm);
+			
+			allPoints.push_back(norm);
+			neighbors.clear();
+			
+			
+			
+			
+		for(int l = 0; l < randBranch.size(); l++)
+		{
+			x = allPoints[i].x - randBranch[l].x;
+			y = allPoints[i].y - randBranch[l].y;
+			z = allPoints[i].z - randBranch[l].z;
+			
+			x = x * x;
+			y = y * y;
+			z = z * z;
+			
+			length = x + y + z;
+			currDist = sqrt(length);
+			if(radiusInfluence > currDist)
+			{
+				vec3 newTreeNode = allPoints[i] + (1.5f * norm);
+				allPoints.push_back(newTreeNode);
+			}
+		}
+
+
+
+-----------------------------------------------
+//This is giving the new tree node to have inf
+
+/*The nested loop simply adds new tree nodes to allPoints (which have some points initialized
+ * to it already). It determines any branch points that are closest to a trunk point in allPoints
+ * and calculates the direction of those points. In turn, it determines the new position of the tree 
+ * node by averaging the normals of all nearby branch points which is then added into allPoints
+ */
+void Tree::spaceAlgorithm()
+{
+	float currDist, tempX, tempY, tempZ, x, y, z, length;
+	int i, j;
+	vec3 norm;
+		
+	for(i = 0; i < allPoints.size(); i++)
+	{
+		for(j = 0; j < randBranch.size(); j++)
+		{
+			x = allPoints[i].x - randBranch[j].x;
+			y = allPoints[i].y - randBranch[j].y;
+			z = allPoints[i].z - randBranch[j].z;
+			
+			x = x * x;
+			y = y * y;
+			z = z * z;
+			
+			length = x + y + z;
+			currDist = sqrt(length);
+			cout << endl;
+			cout << "currDist" << endl;
+			cout << currDist << endl;
+			
+			/*The current trunk point in allPoints is within the radius of influence of a branch point.
+			 * If the radiusInfluence is greater than the currDist then that means the current
+			 * trunk point is one of the closest neighbors to a branch point.*/
+			if(radiusInfluence > currDist)
+			{	
+				neighbors.push_back(allPoints[i]);
+				neighbors.push_back(randBranch[j]);
+				//vertexDist.push_back(currDist);
+			}
+		}
+		if(!neighbors.empty())
+		{
+			norm = avgNormals();
+			cout << endl;
+			cout << "avgNormals" << endl;
+			cout << norm.x << endl;
+			cout << norm.y << endl;
+			cout << norm.z << endl;
+			cout << endl;
+			/*for(int a = 0; a < vertexDist.size(); a++)
+			{
+				cout << "vertexDistance  " << vertexDist[a] << endl;
+				norm = allPoints[i] + (vertexDist[a] * norm);
+				allPoints.push_back(norm);
+				cout << endl;
+				cout << "newTreeNode  1" << endl;
+				cout << norm.x << endl;
+				cout << norm.y << endl;
+				cout << norm.z << endl;
+				cout << endl;
+			}*/
+		}
+		/*for(int l = 0; l < randBranch.size(); l++)
+		{
+			x = allPoints[i].x - randBranch[l].x;
+			y = allPoints[i].y - randBranch[l].y;
+			z = allPoints[i].z - randBranch[l].z;
+			
+			x = x * x;
+			y = y * y;
+			z = z * z;
+			
+			length = x + y + z;
+			currDist = sqrt(length);
+			if(radiusInfluence > currDist)
+			{
+				vec3 newTreeNode = allPoints[i] + (1.5f * norm);
+				allPoints.push_back(newTreeNode);
+			}
+		}*/
+			
+			
+			//There might be a problem with currDist since it might not be the value going from v to v'
+			//Should fix this or look over again
+			
+			/**/norm = allPoints[i] + (1.5f * norm);
+			cout << endl;
+			cout << "newTreeNode   2" << endl;
+			cout << norm.x << endl;
+			cout << norm.y << endl;
+			cout << norm.z << endl;
+			cout << endl;
+			allPoints.push_back(norm);
+			neighbors.clear();
+			
+			//Removes any branches that are withing a trunk point (re-word later)~~~
+			removeBranches();
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+------------------------------------------------------
+Drawing the points for a tree
+	
+glBegin(GL_LINES);
+	glColor3f(0.0f, 0.5f, 0.8f);
+	for(int p = 0; p < 15; p += 1)
+	{
+		//cout << "\nIndex  " << p << endl;
+		//cout << allPoints[p].x << " " << allPoints[p].y << " " << allPoints[p].z << endl;
+		/*Just an idea
+		 * get the distance of neighboring points in allpoints. If a tree node is within a radius
+		 * then draw a line from that tree node to the nearby node. 
+		 * can either split the allpoints in space algorithm into two separate vector arrays.
+		 * One with the original trunk and the other one will all new nodes. might make the 
+		 * tree look a bit odd but it's just an idea
+		 */ 
+		glVertex3f(allPoints[p].x, allPoints[p].y, allPoints[p].z);
+		glVertex3f(allPoints[p+1].x, allPoints[p+1].y, allPoints[p+1].z);
+		
+		//glVertex3f(allPoints[p].x, allPoints[p].y, allPoints[p].z);
+		//glVertex3f(allPoints[2*p+1].x, allPoints[2*p+1].y, allPoints[2*p+1].z);
+	}
+	glEnd();
+	
+	glBegin(GL_LINES);
+	glColor3f(0.0f, 0.5f, 0.8f);
+	for(int i = 11, p = allPoints.size(); p > 6 && i < 15; i++, p -= 2)
+	{
+		//cout << "\nIndex  " << p << endl;
+		//cout << allPoints[p].x << " " << allPoints[p].y << " " << allPoints[p].z << endl;
+		/*Just an idea
+		 * get the distance of neighboring points in allpoints. If a tree node is within a radius
+		 * then draw a line from that tree node to the nearby node. 
+		 * can either split the allpoints in space algorithm into two separate vector arrays.
+		 * One with the original trunk and the other one will all new nodes. might make the 
+		 * tree look a bit odd but it's just an idea
+		 */ 
+		glVertex3f(allPoints[i].x, allPoints[i].y, allPoints[i].z);
+		glVertex3f(allPoints[p].x, allPoints[p].y, allPoints[p].z);
+		
+		//glVertex3f(allPoints[p-1].x, allPoints[p-1].y, allPoints[p-1].z);
+		//glVertex3f(allPoints[p].x, allPoints[p].y, allPoints[p].z);
+		
+		//glVertex3f(allPoints[p].x, allPoints[p].y, allPoints[p].z);
+		//glVertex3f(allPoints[2*p+1].x, allPoints[2*p+1].y, allPoints[2*p+1].z);
+	}
+	glEnd();
+	
