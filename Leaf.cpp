@@ -43,7 +43,9 @@ void Leaf::drawLeaf(float x, float y, float z)
 	splitLeafPoints.push_back(vec3(x_start, y_start, z_start));
 	splitLeafPoints.push_back(vec3(x_start, y_start + stem_length, z_start + z_delta));	
 	
-	//glRotatef(30.0f, 0.0, 1.0, 0.0); // variable degree of rotation to change the orientation
+	//glTranslatef(x_start, y_start, z_start);
+	//glRotatef(30.0f, 0.0, 1.0, 0.0);
+	//glTranslatef(-x_start, -y_start, -z_start);
 	glBegin(GL_LINES);
 	glColor3f(0.184f, 0.409f, 0.184f);
 	glVertex3f(splitLeafPoints[0].x, splitLeafPoints[0].y, splitLeafPoints[0].z);
@@ -100,7 +102,6 @@ void Leaf::drawLeaf(float x, float y, float z)
 		glVertex3f(splitLeafPoints[i+3].x, splitLeafPoints[i+3].y, splitLeafPoints[i+3].z);
 	}
 	glEnd();
-	
 	splitLeafPoints.clear();
 }
 
@@ -173,9 +174,6 @@ void Leaf::drawGenericLeaf()
 	glEnd();
 	
 	splitLeafPoints.clear();
-	
-	
-	
 }
 void Leaf::fractals(int n)
 {	

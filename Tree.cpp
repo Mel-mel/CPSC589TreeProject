@@ -61,9 +61,18 @@ void Tree::renderTreeStageThree() // adding the leaves
 		//drawLeaf(splitPoints[2*i].x, splitPoints[2*i].y);
 
 	//}
-	
-	aLeaf.drawLeaf(0,0,0);
-	
+	for(float i = -0.5; i < 0.5; i+=0.2)
+	{
+		aLeaf.drawLeaf(0.0,i,0.0);
+	}
+	for(float i = -0.5; i < 0.5; i+=0.2)
+	{
+		aLeaf.drawLeaf(-0.5,i,0.0);
+	}
+	for(float i = -0.5; i < 0.5; i+=0.2)
+	{
+		aLeaf.drawLeaf(0.5,i,0.0);
+	}
 }
 
 
@@ -190,7 +199,7 @@ void Tree::renderTreeStageOne()
 	vec2 startpoint(0.0f, -0.9);
 	//glBegin(GL_POINTS);
 	glBegin(GL_LINES);
-	glColor3f(1.0f, 0.0f, 0.0f);
+	glColor3f(1.0f, 0.51f, 0.0f);
 	//for(int i = 0; i < heightTop.y; i++)
 	//{
 	//Should call fractals here and do stuff
@@ -199,13 +208,12 @@ void Tree::renderTreeStageOne()
 	//}
 	
 	
-	
 	splitPoints.push_back(vec2(startpoint.x, startpoint.y));
 	splitPoints.push_back(vec2(startpoint.x, startpoint.y + temp));
 	glEnd();
 	
 	fractals(index);
-	for(int j = 0; j < splitPoints.size()- stopPoint; j++)
+	/*for(int j = 0; j < splitPoints.size()- stopPoint; j++)
 	{
 		cout << "INDEX  " << j << endl;
 		cout << "x  " << splitPoints[j].x << "  " << "y  " << splitPoints[j].y << endl;
@@ -215,7 +223,7 @@ void Tree::renderTreeStageOne()
 		
 		cout << "x  " << splitPoints[j].x << "  " << "y  " << splitPoints[j].y << endl;
 		cout << "x  " << splitPoints[2*j+1].x << "  " << "y  " << splitPoints[2*j+1].y << endl;
-	}
+	}*/
 	glBegin(GL_LINES);
 	
 	for(int i = 1; i < splitPoints.size()- stopPoint; i++)
@@ -234,7 +242,7 @@ void Tree::renderTreeStageOne()
 		
 		
 		
-		glColor3f(1.0f, 0.0f, 0.0f);
+		glColor3f(0.90f, 0.51f, 0.0f);
 		//First line
 		glVertex2f(splitPoints[i].x, splitPoints[i].y);
 		glVertex2f(splitPoints[2*i].x, splitPoints[2*i].y);
@@ -245,14 +253,18 @@ void Tree::renderTreeStageOne()
 	
 	for(int i = 1; i < splitPoints.size()- stopPoint; i++)
 	{
-		//Second line 
-//glBegin(GL_LINES);
-		glColor3f(0.0f, 1.0f, 0.0f);
+		glColor3f(1.0f, 0.51f, 0.0f);
 		glVertex2f(splitPoints[i].x, splitPoints[i].y);
 		glVertex2f(splitPoints[2*i+1].x, splitPoints[2*i+1].y);
-//glEnd();
 	}
 	glEnd();
+	
+	
+	for(float i = 1; i < splitPoints.size() - stopPoint; i++)
+	{
+		aLeaf.drawLeaf(splitPoints[i].x,splitPoints[i].y,0.0);
+	}
+	
 	splitPoints.clear();
 }
 

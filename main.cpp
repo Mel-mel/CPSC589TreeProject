@@ -25,26 +25,48 @@ std::string str = "Click again to render first stage!";
 bool getDimensions = true;
 bool doneDimensions = false;
 bool stageOne = false;
+bool stageTwo = false;
+bool stageThree = false;
+bool stageFour = false;
+bool stageFive = false;
+bool renderLeaf = false;
+
 Tree aTree;
+Leaf leaf;
 vector<glm::vec2> treeD;
 // leaf span: could possibly use this variable to add slider for amount of leafyness
+void justLeaf()
+{
+	// close up view of one leaf
+	leaf.drawGenericLeaf();
+}
 
+void fifthStage()
+{
+	// complete, rendered tree
+}
+
+void fourthStage()
+{
+	// add the leaves
+}
 
 void thirdStage()
 {
+	// draw the tree with cylinders
 	aTree.renderTreeStageThree();
 }
 
 void secondStage()
 {
-	//aTree.initializeCylinders();
+	// draw the tree as points and lines
 	aTree.renderTreeStageTwo();
 }
 
 //Render the first stage of the tree (just the outlines of a tree)
 void firstStage()
 {
-	//Create a new tree
+	// draw the tree as just points
 	Tree aTree(treeD[0], treeD[1], treeD[2], treeD[3]);
 	aTree.renderTreeStageOne();
 }
@@ -124,15 +146,33 @@ void renderer () {
 	}
 	if(stageOne == true)
 	{
-		//firstStage();
-		//secondStage();
-		thirdStage();
+		firstStage();
 	} 
+	if(stageTwo == true)
+	{
+		secondStage();
+	} 
+	if(stageThree == true)
+	{
+		thirdStage();
+	}
+	if(stageFour == true)
+	{
+		fourthStage();
+	}
+	if(stageFive == true)
+	{
+		fifthStage();
+	}
+	if(renderLeaf == true)
+	{
+		justLeaf();
+	}
+	
+	
 }
 
 void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) { // key pressed, action of holding or releasing, mods are if CTRL or SHIFT are being held
-	if(key == GLFW_KEY_A && (action == GLFW_PRESS || action == GLFW_REPEAT))
-		cout << "a was pressed.\n";
 	if(key == GLFW_KEY_ESCAPE && (action == GLFW_PRESS || action == GLFW_REPEAT))
 	{
 		exit(0);
@@ -162,6 +202,158 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 			zoom = zoom;
 		}
 	}
+	if(key == GLFW_KEY_R && action == GLFW_PRESS)
+	{
+		treeD.clear();
+		yRotate = 0;
+		count = 0; // initial order of user input for dimensions
+		zoom = 1;
+		getDimensions = true;
+		doneDimensions = false;
+		stageOne = false;
+		stageTwo = false;
+		stageThree = false;
+		stageFour = false;
+		stageFive = false;
+		renderLeaf = false;
+	}
+	if(key == GLFW_KEY_L && action == GLFW_PRESS)
+	{
+		getDimensions = false;
+		doneDimensions = false;
+		stageOne = false;
+		stageTwo = false;
+		stageThree = false;
+		stageFour = false;
+		stageFive = false;
+		renderLeaf = true;
+	}
+	if(key == GLFW_KEY_1 && action == GLFW_PRESS)
+	{
+		if(treeD.empty())
+		{
+			getDimensions = true;
+			doneDimensions = false;
+			stageOne = false;
+			stageTwo = false;
+			stageThree = false;
+			stageFour = false;
+			stageFive = false;
+			renderLeaf = false;
+		}
+		else
+		{
+			getDimensions = false;
+			doneDimensions = false;
+			stageOne = true;
+			stageTwo = false;
+			stageThree = false;
+			stageFour = false;
+			stageFive = false;
+			renderLeaf = false;
+		}
+	}
+	if(key == GLFW_KEY_2 && action == GLFW_PRESS)
+	{
+		if(treeD.empty())
+		{
+			getDimensions = true;
+			doneDimensions = false;
+			stageOne = false;
+			stageTwo = false;
+			stageThree = false;
+			stageFour = false;
+			stageFive = false;
+			renderLeaf = false;
+		}
+		else
+		{
+			getDimensions = false;
+			doneDimensions = false;
+			stageOne = false;
+			stageTwo = true;
+			stageThree = false;
+			stageFour = false;
+			stageFive = false;
+			renderLeaf = false;
+		}
+	}
+	if(key == GLFW_KEY_3 && action == GLFW_PRESS)
+	{
+		if(treeD.empty())
+		{
+			getDimensions = true;
+			doneDimensions = false;
+			stageOne = false;
+			stageTwo = false;
+			stageThree = false;
+			stageFour = false;
+			stageFive = false;
+			renderLeaf = false;
+		}
+		else
+		{
+			getDimensions = false;
+			doneDimensions = false;
+			stageOne = false;
+			stageTwo = false;
+			stageThree = true;
+			stageFour = false;
+			stageFive = false;
+			renderLeaf = false;
+		}
+	}
+	if(key == GLFW_KEY_4 && action == GLFW_PRESS)
+	{
+		if(treeD.empty())
+		{
+			getDimensions = true;
+			doneDimensions = false;
+			stageOne = false;
+			stageTwo = false;
+			stageThree = false;
+			stageFour = false;
+			stageFive = false;
+			renderLeaf = false;
+		}
+		else
+		{
+			getDimensions = false;
+			doneDimensions = false;
+			stageOne = false;
+			stageTwo = false;
+			stageThree = false;
+			stageFour = true;
+			stageFive = false;
+			renderLeaf = false;
+		}
+	}
+	if(key == GLFW_KEY_5 && action == GLFW_PRESS)
+	{
+		if(treeD.empty())
+		{
+			getDimensions = true;
+			doneDimensions = false;
+			stageOne = false;
+			stageTwo = false;
+			stageThree = false;
+			stageFour = false;
+			stageFive = false;
+			renderLeaf = false;
+		}
+		else
+		{
+			getDimensions = false;
+			doneDimensions = false;
+			stageOne = false;
+			stageTwo = false;
+			stageThree = false;
+			stageFour = false;
+			stageFive = true;
+			renderLeaf = false;
+		}
+	}
+	
 }
 
 void mouseClick (GLFWwindow *sender, int button, int action, int mods) {
