@@ -252,6 +252,13 @@ void init()
 {
 	Tree aTree;
 	aTree.initTrunk();
+	for(int i = 0; i < 100; i++)
+	{
+		aTree.initTrunk();
+		aTree.genRandomBranch();
+		aTree.spaceAlgorithm();
+	}
+	
 	aTree.genRandomBranch();
 	aTree.spaceAlgorithm();
 	
@@ -265,13 +272,14 @@ glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
 	window = glfwCreateWindow(800, 900, "My Window", NULL, NULL); // size and name of window
 	if (!window)
 		return 1;
-
+	
+	init();
 	glfwMakeContextCurrent(window); // ensure we are rendering to the correct location
 	glfwSetKeyCallback(window, keyboard);	
 	glfwSetMouseButtonCallback(window, mouseClick);
 	glfwSetCursorPosCallback(window, mousePosition);
 	//createDropDownMenu();
-	init();
+	
 	while(!glfwWindowShouldClose(window)) { // while not exited
 		glfwGetFramebufferSize(window, &w, &h);
 		glViewport(0, 0, w, h);
