@@ -1,5 +1,6 @@
 #include <GLFW/glfw3.h>
 #include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
 #include <GL/gl.h>
 #include <GL/glu.h> 
 #include <GL/glut.h>
@@ -9,35 +10,89 @@
 
 #include "Tree.h"
 #include "Leaf.h"
-/*nice colors
-glColor3f(0.2f, 0.6f, 0.5f);
-glColor3f(0.9f, 0.9f, 0.7f);
-*/
+
 using namespace std;
 
 GLFWwindow *window; 
 int w, h;
 double mouseX, mouseY;
 float yRotate = 0;
+float xTranslate = 0;
+float yTranslate = 0;
 int count = 0; // initial order of user input for dimensions
-int zoom = 1;
-std::string str = "Click again to render first stage!";
+float zoom = 1;
+std::string str = "Click again to render the tree!";
 bool getDimensions = true;
 bool doneDimensions = false;
+bool initializeTree = false;
 bool stageOne = false;
+bool stageTwo = false;
+bool stageThree = false;
+bool stageFour = false;
+bool stageFive = false;
+bool renderLeaf = false;
 
+Tree aTree;
+Leaf leaf;
 vector<glm::vec2> treeD;
+
+void treeSetup()
+{
+	if(initializeTree == true)
+		{
+			Tree aTree((treeD[1].y - treeD[0].y)*2);
+			aTree.initTrunk();
+			for(int i = 0; i < 100; i++)
+			{
+				aTree.initTrunk();
+				aTree.genRandomBranch();
+				aTree.spaceAlgorithm();
+			}
+			
+			aTree.genRandomBranch();
+			aTree.spaceAlgorithm();
+			initializeTree = false;
+		}
+}
+
 // leaf span: could possibly use this variable to add slider for amount of leafyness
+void justLeaf()
+{
+	// close up view of one leaf
+	leaf.drawGenericLeaf();
+}
 
+void fifthStage()
+{
+	// complete, rendered tree
+}
 
+void fourthStage()
+{
+	// add the leaves
+	aTree.drawTree(4);
+	
+}
 
+void thirdStage()
+{
+	// draw the tree with cylinders
+	//aTree.renderTreeStageThree();
+}
+
+void secondStage()
+{
+	// draw the tree as points and lines
+	treeSetup();
+	aTree.drawTree(2);
+}
 
 //Render the first stage of the tree (just the outlines of a tree)
 void firstStage()
 {
-	//Create a new tree
-	Tree aTree(treeD[0], treeD[1], treeD[2], treeD[3]);
-	aTree.renderTreeStageOne();
+	// draw the tree as just points
+	treeSetup();
+	aTree.drawTree(1);
 }
 
 void renderBasicHeight()
@@ -58,22 +113,9 @@ void renderBasicHeight()
 			glVertex2f(treeD[0].x, treeD[0].y);
 			glVertex2f(treeD[1].x, treeD[1].y);
 		}
-		if(treeD.size() >=4 )
-		{
-			glColor3f(1.0f, 0.8f, 0.2f);
-			glVertex2f(treeD[2].x, treeD[2].y);
-			glVertex2f(treeD[3].x, treeD[3].y);
-		}
-		if(treeD.size() == 6)
-		{
-			glColor3f(0.0f, 0.9f, 0.4f);
-			glVertex2f(treeD[4].x, treeD[4].y);
-			glVertex2f(treeD[5].x, treeD[5].y);
-		}
 	glEnd();
-	
-	
-	
+	initializeTree = true;
+		
 }
 
 void textButton(int x_pos, int y_pos)
@@ -96,8 +138,9 @@ void renderer () {
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	//glRotatef(30.0f, 0.0f, 0.0f, 1.0f);
+	glTranslatef(xTranslate, yTranslate, 0.0f);
 	glRotatef(yRotate, 0.0f, 1.0f, 0.0f);//Rotate on the y axis
+	
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -117,11 +160,31 @@ void renderer () {
 	{
 		firstStage();
 	} 
+	if(stageTwo == true)
+	{
+		secondStage();
+	} 
+	if(stageThree == true)
+	{
+		thirdStage();
+	}
+	if(stageFour == true)
+	{
+		fourthStage();
+	}
+	if(stageFive == true)
+	{
+		fifthStage();
+	}
+	if(renderLeaf == true)
+	{
+		justLeaf();
+	}
+	
+	
 }
 
 void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) { // key pressed, action of holding or releasing, mods are if CTRL or SHIFT are being held
-	if(key == GLFW_KEY_A && (action == GLFW_PRESS || action == GLFW_REPEAT))
-		cout << "a was pressed.\n";
 	if(key == GLFW_KEY_ESCAPE && (action == GLFW_PRESS || action == GLFW_REPEAT))
 	{
 		exit(0);
@@ -136,21 +199,199 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 	{
 		yRotate = yRotate - 15.0f;
 	}
+	//Translate up
+	if(key == GLFW_KEY_UP && (action == GLFW_PRESS || action == GLFW_REPEAT))
+	{
+		yTranslate = yTranslate + 0.1f;
+	}
+	//Translate down
+	if(key == GLFW_KEY_DOWN && (action == GLFW_PRESS || action == GLFW_REPEAT))
+	{
+		yTranslate = yTranslate - 0.1f;
+	}
+	//Translate left
+	if(key == GLFW_KEY_LEFT && (action == GLFW_PRESS || action == GLFW_REPEAT))
+	{
+		xTranslate = xTranslate - 0.1f;
+	}
+	//Translate right
+	if(key == GLFW_KEY_RIGHT && (action == GLFW_PRESS || action == GLFW_REPEAT))
+	{
+		xTranslate = xTranslate + 0.1f;
+	}
 	if(key == GLFW_KEY_Z && (action == GLFW_PRESS || action == GLFW_REPEAT))
 	{
-		zoom += 1.0f;
+		zoom += 0.1f;
 	}
 	if(key == GLFW_KEY_X && (action == GLFW_PRESS || action == GLFW_REPEAT))
 	{
 		if(zoom > 0)
 		{
-			zoom -= 1.0f;
+			zoom -= 0.1f;
 		}
 		else
 		{
 			zoom = zoom;
 		}
 	}
+	if(key == GLFW_KEY_R && action == GLFW_PRESS)
+	{
+		treeD.clear();
+		yRotate = 0;
+		count = 0; // initial order of user input for dimensions
+		zoom = 1;
+		xTranslate = 0;
+		yTranslate = 0;
+		getDimensions = true;
+		doneDimensions = false;
+		stageOne = false;
+		stageTwo = false;
+		stageThree = false;
+		stageFour = false;
+		stageFive = false;
+		renderLeaf = false;
+	}
+	if(key == GLFW_KEY_L && action == GLFW_PRESS)
+	{
+		zoom = 0;
+		getDimensions = false;
+		doneDimensions = false;
+		stageOne = false;
+		stageTwo = false;
+		stageThree = false;
+		stageFour = false;
+		stageFive = false;
+		renderLeaf = true;
+	}
+	if(key == GLFW_KEY_1 && action == GLFW_PRESS)
+	{
+		if(treeD.empty())
+		{
+			getDimensions = true;
+			doneDimensions = false;
+			stageOne = false;
+			stageTwo = false;
+			stageThree = false;
+			stageFour = false;
+			stageFive = false;
+			renderLeaf = false;
+		}
+		else
+		{
+			zoom =11.8;
+			getDimensions = false;
+			doneDimensions = false;
+			stageOne = true;
+			stageTwo = false;
+			stageThree = false;
+			stageFour = false;
+			stageFive = false;
+			renderLeaf = false;
+		}
+	}
+	if(key == GLFW_KEY_2 && action == GLFW_PRESS)
+	{
+		if(treeD.empty())
+		{
+			getDimensions = true;
+			doneDimensions = false;
+			stageOne = false;
+			stageTwo = false;
+			stageThree = false;
+			stageFour = false;
+			stageFive = false;
+			renderLeaf = false;
+		}
+		else
+		{
+			zoom = 11.8;
+			getDimensions = false;
+			doneDimensions = false;
+			stageOne = false;
+			stageTwo = true;
+			stageThree = false;
+			stageFour = false;
+			stageFive = false;
+			renderLeaf = false;
+		}
+	}
+	if(key == GLFW_KEY_3 && action == GLFW_PRESS)
+	{
+		if(treeD.empty())
+		{
+			getDimensions = true;
+			doneDimensions = false;
+			stageOne = false;
+			stageTwo = false;
+			stageThree = false;
+			stageFour = false;
+			stageFive = false;
+			renderLeaf = false;
+		}
+		else
+		{
+			getDimensions = false;
+			doneDimensions = false;
+			stageOne = false;
+			stageTwo = false;
+			stageThree = true;
+			stageFour = false;
+			stageFive = false;
+			renderLeaf = false;
+		}
+	}
+	if(key == GLFW_KEY_4 && action == GLFW_PRESS)
+	{
+		if(treeD.empty())
+		{
+			getDimensions = true;
+			doneDimensions = false;
+			stageOne = false;
+			stageTwo = false;
+			stageThree = false;
+			stageFour = false;
+			stageFive = false;
+			renderLeaf = false;
+		}
+		else
+		{
+			zoom = 11.8;
+			getDimensions = false;
+			doneDimensions = false;
+			stageOne = false;
+			stageTwo = false;
+			stageThree = false;
+			stageFour = true;
+			stageFive = false;
+			renderLeaf = false;
+		}
+	}
+	if(key == GLFW_KEY_5 && action == GLFW_PRESS)
+	{
+		if(treeD.empty())
+		{
+			getDimensions = true;
+			doneDimensions = false;
+			stageOne = false;
+			stageTwo = false;
+			stageThree = false;
+			stageFour = false;
+			stageFive = false;
+			renderLeaf = false;
+		}
+		else
+		{
+			getDimensions = false;
+			doneDimensions = false;
+			stageOne = false;
+			stageTwo = false;
+			stageThree = false;
+			stageFour = false;
+			stageFive = true;
+			renderLeaf = false;
+		}
+	}
+	
 }
 
 void mouseClick (GLFWwindow *sender, int button, int action, int mods) {
@@ -159,28 +400,18 @@ void mouseClick (GLFWwindow *sender, int button, int action, int mods) {
 		if(button == GLFW_MOUSE_BUTTON_LEFT && count == 0 || count == 1)
 		{
 			treeD.push_back(glm::vec2(mouseX, mouseY)); //height
-			count++;
-		}
-		else if(button == GLFW_MOUSE_BUTTON_LEFT && count == 2 || count == 3)
-		{
-			treeD.push_back(glm::vec2(mouseX, mouseY)); // trunk width
-			count++;
-		}
-		else if(button == GLFW_MOUSE_BUTTON_LEFT && count == 4 || count == 5)
-		{
-			treeD.push_back(glm::vec2(mouseX, mouseY));// leaf span
-			
-			if (count == 5)
+			if (count == 1)
 			{
 				doneDimensions = true;
 			}
 			count++;
 		}
-		else if(count > 5)
+		else if(count > 1)
 		{
 			stageOne = true;
 			doneDimensions = false; 
 			getDimensions = false;
+			zoom = 11.8;
 			
 		}
 		
