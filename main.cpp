@@ -77,6 +77,7 @@ void fourthStage()
 void thirdStage()
 {
 	// draw the tree with cylinders
+	aTree.drawTree(3);
 	//aTree.renderTreeStageThree();
 }
 
@@ -147,7 +148,6 @@ void renderer () {
 	glOrtho(-zoom,zoom,-zoom,zoom,-zoom,zoom);
 	//glFrustum for perspective or GLU - gluPerspective
 	
-
 	if(getDimensions == true)
 	{
 		if(doneDimensions == true)
@@ -237,6 +237,7 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 	if(key == GLFW_KEY_R && action == GLFW_PRESS)
 	{
 		treeD.clear();
+		aTree.clearArray();
 		yRotate = 0;
 		count = 0; // initial order of user input for dimensions
 		zoom = 1;

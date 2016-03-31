@@ -45,5 +45,7 @@ public:
 	void genRandomBranch();
 	vec3 avgNormals();
 	void removeBranches();
+	void createLeafPositions();
+	void clearArray();
 	
 };

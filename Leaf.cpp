@@ -42,9 +42,11 @@ void Leaf::drawLeaf(float x, float y, float z)
 	splitLeafPoints.push_back(vec3(x_start, y_start, z_start));
 	splitLeafPoints.push_back(vec3(x_start, y_start + stem_length, z_start + z_delta));	
 	
-	//glTranslatef(x_start, y_start, z_start);
-	//glRotatef(30.0f, 0.0, 1.0, 0.0);
-	//glTranslatef(-x_start, -y_start, -z_start);
+	glTranslatef(-x_start, -y_start, -z_start);
+	//glRotatef(15.0f, 0.0, 1.0, 0.0);
+	glTranslatef(x_start, y_start, z_start);
+	
+	
 	glBegin(GL_LINES);
 	glColor3f(0.184f, 0.409f, 0.184f);
 	glVertex3f(splitLeafPoints[0].x, splitLeafPoints[0].y, splitLeafPoints[0].z);

@@ -19,7 +19,7 @@ int index = 1;
 float length = 0.5f; //The initial length of the trunk/branch
 float theta = M_PI/6;
 float temp = 0.5f;
-int numOfBranches = 250;
+int numOfBranches = 300;
 float tree_height = 0;
 Leaf aLeaf;
 
@@ -38,14 +38,11 @@ struct branches
 	vec3 p2;
 };
 
-
-vector<glm::vec2> splitPoints; // keeps track of point where one branch becomes two 
-vector<glm::vec3> allPoints;	//This is for the space algorithm to store all trunk, branch, and connected points
 vector<glm::vec3> neighbors; //Contains only branch points (from user input?)
-vector<glm::vec3> randBranch;
+vector<glm::vec3> randBranch;//Contains random branch points to allow the tree to grow branches
 vector<glm::vec3> holding;
-vector<glm::vec3> removable;
-vector<branches> treeNodes;
+vector<branches> leafPosition;//Contains leaf positions to draw a large set of them
+vector<branches> treeNodes;	//Contains tree nodes generated from the space algorithm
 
 GLUquadricObj *quadratic;
 
@@ -78,30 +75,13 @@ Tree::Tree(vec2 hBase, vec2 hTop, vec2 w1, vec2 w2)
 	heightTop = hTop;
 	width1 = w1;
 	width2 = w2;
+	
+}
 
-	/*
-	//vec2 startpoint (heightBase.x, heightBase.y);
-	vec2 startpoint(0.0f, -0.9);
-	//glBegin(GL_POINTS);
-	glBegin(GL_LINES);
-	glColor3f(1.0f, 0.0f, 0.0f);
-	//for(int i = 0; i < heightTop.y; i++)
-	//{
-	//Should call fractals here and do stuff
-	glVertex2f(startpoint.x, startpoint.y);
-	glVertex2f(startpoint.x, startpoint.y + temp);
-	//}
-	
-	
-	
-	splitPoints.push_back(vec2(startpoint.x, startpoint.y));
-	splitPoints.push_back(vec2(startpoint.x, startpoint.y + temp));
-	glEnd();*/
-	
-	//fractals(index);
-	//x_change = 0.5f;
-	//y_change = 0.5f;
-	
+void Tree::clearArray()
+{
+	treeNodes.clear();
+	leafPosition.clear();
 }
 
 void Tree::setValues(vec3 hBase, vec3 hTop, vec3 w1, vec3 w2)
@@ -155,168 +135,6 @@ void Tree::renderCylinder_convenient(float x1, float y1, float z1, float x2,floa
 	gluQuadricNormals(quadric, GLU_SMOOTH);
 	renderCylinder(x1,y1,z1,x2,y2,z2,radius,subdivisions,quadric);
 	gluDeleteQuadric(quadric);
-}
-
-void Tree::renderTreeStageTwo()
-{
-	/*glTranslatef(0.0f,-0.7f,0.0f); //-0.7 should be replaced with first point given as height
-	glRotatef(180.0f, 0.0f, 1.0f, 1.0f);
-	glBegin(GL_POLYGON);
-	
-	
-	glColor3f(1.0f, 0.8f, 0.2f);
-	
-	gluCylinder(quadratic,0.015f,0.015f,0.9f,50,50);
-	
-	glEnd();*/
-	//vec2 startpoint (heightBase.x, heightBase.y);//This is for the user input
-	vec2 startpoint(0.0f, -0.9);
-	splitPoints.push_back(vec2(startpoint.x, startpoint.y));
-	splitPoints.push_back(vec2(startpoint.x, startpoint.y + temp));
-	renderCylinder_convenient(splitPoints[0].x, splitPoints[0].y, 0, splitPoints[1].x, splitPoints[1].y, 0, 0.025, 10);
-	fractals(index);
-	for(int i = 1; i < splitPoints.size()-stopPoint; i++)
-	{
-		glColor3f(0.0f, 1.0f, 0.0f);
-		renderCylinder_convenient(splitPoints[i].x, splitPoints[i].y, 0, splitPoints[2*i].x, splitPoints[2*i].y, 0, 0.025, 10); 
-	} 
-	for(int i = 1; i < splitPoints.size()-stopPoint; i++)
-	{
-		glColor3f(1.0f, 0.8f, 0.2f);
-		renderCylinder_convenient(splitPoints[i].x, splitPoints[i].y, 0, splitPoints[2*i+1].x, splitPoints[2*i+1].y, 0, 0.025, 10); 
-	} 
-	splitPoints.clear();
-}
-
-void Tree::renderTreeStageOne()
-{	
-	for(int j = 0; j < splitPoints.size()- stopPoint; j++)
-	{
-		cout << "INDEX  " << j << endl;
-		cout << "x  " << splitPoints[j].x << "  " << "y  " << splitPoints[j].y << endl;
-		cout << "x  " << splitPoints[2*j].x << "  " << "y  " << splitPoints[2*j].y << endl;
-		
-		cout << endl;
-		
-		cout << "x  " << splitPoints[j].x << "  " << "y  " << splitPoints[j].y << endl;
-		cout << "x  " << splitPoints[2*j+1].x << "  " << "y  " << splitPoints[2*j+1].y << endl;
-	}
-	glBegin(GL_LINES);
-	
-	for(int i = 1; i < splitPoints.size()- stopPoint; i++)
-	{
-		/*if(i % 2 == 1)
-		{
-			glTranslatef(-splitPoints[i].x, -splitPoints[i].y, 0.0f);
-			glRotatef(50, 1.0f, 0.0f,0.0f);
-			glTranslatef(splitPoints[i].x, splitPoints[i].y, 0.0f);
-			glBegin(GL_LINES);
-		}
-		else
-		{
-			glBegin(GL_LINES);
-		}*/
-		
-		
-		
-		glColor3f(1.0f, 0.0f, 0.0f);
-		//First line
-		glVertex2f(splitPoints[i].x, splitPoints[i].y);
-		glVertex2f(splitPoints[2*i].x, splitPoints[2*i].y);
-
-		
-	}
-	
-	
-	for(int i = 1; i < splitPoints.size()- stopPoint; i++)
-	{
-		//Second line 
-//glBegin(GL_LINES);
-glColor3f(0.0f, 1.0f, 0.0f);
-		glVertex2f(splitPoints[i].x, splitPoints[i].y);
-		glVertex2f(splitPoints[2*i+1].x, splitPoints[2*i+1].y);
-//glEnd();
-	}
-	glEnd();
-	splitPoints.clear();
-}
-
-//This will run with the trunk already placed inside the splitPoints vector array
-void Tree::fractals(int n)
-{	
-	
-	//The if should exit the function once the last set of branches are drawn...?
-	if(n == num)
-	{
-		//Left branch
-		vec2 leftTemp = splitPoints[n];
-		leftTemp.x = (leftTemp.x - x_change)*sin(theta);
-		//leftTemp.y = leftTemp.y + y_change;
-		leftTemp.y = (leftTemp.y + y_change)*cos(-theta);
-		splitPoints.push_back(leftTemp);
-		
-		//Right branch
-		vec2 rightTemp = splitPoints[n];
-		rightTemp.x = (rightTemp.x + x_change)*sin(theta);
-		rightTemp.y = (rightTemp.y +  y_change)*cos(theta);
-		splitPoints.push_back(rightTemp);
-	}
-	//Generate the left and right branches
-	else
-	{	
-		if(y_change < 0.01)
-		{
-			y_change = 0.01;
-		}
-		if(x_change < 0.01)
-		{
-			x_change = 0.01;
-		}
-		
-		
-		//Calculate cos and sin as individual variables
-		//Then take that values and times it by 2?
-		//Then add it to the change values
-		
-		
-		//Left branch
-		vec2 leftTemp = splitPoints[n];
-		leftTemp.x = (leftTemp.x - x_change)*sin(theta);
-		leftTemp.y = (leftTemp.y + y_change)*cos(-theta);
-		splitPoints.push_back(leftTemp);
-		
-		//Right branch
-		vec2 rightTemp = splitPoints[n];
-		rightTemp.x = (rightTemp.x + x_change)*sin(theta);
-		//rightTemp.y = rightTemp.y +  y_change;
-		rightTemp.y = (rightTemp.y +  y_change)*cos(theta);
-		splitPoints.push_back(rightTemp);
-		/*if(x_change > 0.02)
-		{
-			x_change -= 0.01;
-		}
-		if(y_change > 0.02)
-		{
-			y_change -= 0.01;
-		}*/
-		
-		fractals(n+1);
-		
-	}
-	/*
-	if(n == 1)
-	{
-		cout << 1 << endl;
-		return 1;
-	}
-	else
-	{
-		int value = n * fractals(n-1);
-		cout << value << endl;
-		return value;
-	}
-	*/
-	
 }	
 
 //Call this every time a new tree node is added to allPoints
@@ -340,13 +158,14 @@ void Tree::genRandomBranch()
 		}
         randBranch.push_back({ randX, randY, randZ });
         holding.push_back({randX, randY, randZ});
-        srand(i+1);
+        srand(i+2);
       //  cout << randX << " " << randY << " " << randZ << endl;
     }
 }
 
 void Tree::drawTree(int stage)
 {
+	//Just points of the tree
 	if(stage == 1)
 	{
 		glBegin(GL_POINTS);
@@ -360,43 +179,85 @@ void Tree::drawTree(int stage)
 		glEnd();
 	}	
 	
+	//Points and lines of the tree. A line colored from blue to red shows how a line is being 
+	//drawn to anothe point
 	if(stage == 2)
 	{
-		glBegin(GL_LINES);
-		
+		glBegin(GL_POINTS);
 		for(int i = 0; i < treeNodes.size(); i++)
 		{
 			glColor3f(0.5f, 0.4f, 0.2f);
 			glVertex3f(treeNodes[i].p1.x, treeNodes[i].p1.y, treeNodes[i].p1.z);
-			glColor3f(0.5f, 0.4f, 0.2f);
+			glVertex3f(treeNodes[i].p2.x, treeNodes[i].p2.y, treeNodes[i].p2.z);
+			//cout << allPoints[i].x << " " << allPoints[i].y << " " << allPoints[i].z << endl;
+		}
+		glEnd();
+		
+		glBegin(GL_LINES);
+		
+		for(int i = 0; i < treeNodes.size(); i++)
+		{
+			glColor3f(0.0f, 0.5f, 0.8f);
+			glVertex3f(treeNodes[i].p1.x, treeNodes[i].p1.y, treeNodes[i].p1.z);
+			glColor3f(1.0f, 0.0f, 0.0f);
 			glVertex3f(treeNodes[i].p2.x, treeNodes[i].p2.y, treeNodes[i].p2.z);
 		}
 		
 		glEnd();
 	}
+	
+	//Drawing the cylinders onto the tree to give it a thickness
 	if(stage == 3)
 	{
-		// cylinders
+		for(int i = 0; i < treeNodes.size(); i++)
+		{
+			glColor3f(0.5f, 0.4f, 0.2f);
+			renderCylinder_convenient(treeNodes[i].p1.x, treeNodes[i].p1.y, treeNodes[i].p1.z, treeNodes[i].p2.x, treeNodes[i].p2.y, treeNodes[i].p2.z, 0.1f, 10.0f); 
+		}
 	}
 	if(stage == 4)
 	{
 		//add leaves **** should be adding to cylinders but for testing we are adding to the lines
 		glBegin(GL_LINES);
-		
 		for(int i = 0; i < treeNodes.size(); i++)
 		{
 			glColor3f(0.5f, 0.4f, 0.2f);
-			glVertex3f(treeNodes[i].p1.x, treeNodes[i].p1.y, treeNodes[i].p1.z);
-			glVertex3f(treeNodes[i].p2.x, treeNodes[i].p2.y, treeNodes[i].p2.z);
+			renderCylinder_convenient(treeNodes[i].p1.x, treeNodes[i].p1.y, treeNodes[i].p1.z, treeNodes[i].p2.x, treeNodes[i].p2.y, treeNodes[i].p2.z, 0.1f, 10.0f); 
 		}
-		for(int j = 30; j < treeNodes.size(); j++)
+		
+		for(int j = 8; j < leafPosition.size(); j++)
 		{
-			aLeaf.drawLeaf(treeNodes[j].p1.x, treeNodes[j].p1.y, treeNodes[j].p1.z);
-			aLeaf.drawLeaf(treeNodes[j].p2.x, treeNodes[j].p2.y, treeNodes[j].p2.z);
+			/*glTranslatef(-leafPosition[j].p1.x, -leafPosition[j].p1.y, -leafPosition[j].p1.z);
+			glRotatef(30.0f, 0.0, 1.0, 0.0);
+			glTranslatef(leafPosition[j].p1.x, leafPosition[j].p1.y, leafPosition[j].p1.z);
+			
+			glTranslatef(-leafPosition[j].p2.x, -leafPosition[j].p2.y, -leafPosition[j].p2.z);
+			glRotatef(30.0f, 0.0, 1.0, 0.0);
+			glTranslatef(leafPosition[j].p2.x, leafPosition[j].p2.y, leafPosition[j].p2.z);*/
+			
+			//aLeaf.drawLeaf(treeNodes[20].p1.x, treeNodes[20].p1.y, treeNodes[20].p1.z);
+			/*glBegin(GL_POINTS);
+			glColor3f(1.0f, 0.0f, 0.0f);
+			glVertex3f(treeNodes[15].p1.x, treeNodes[15].p1.y, treeNodes[15].p1.z);
+			glVertex3f(treeNodes[15].p2.x, treeNodes[15].p2.y, treeNodes[15].p2.z);
+			glEnd();
+			*/
+			aLeaf.drawLeaf(leafPosition[j].p1.x, leafPosition[j].p1.y, leafPosition[j].p1.z);
+			aLeaf.drawLeaf(leafPosition[j].p2.x, leafPosition[j].p2.y, leafPosition[j].p2.z);
+			
+			/*aLeaf.drawLeaf(treeNodes[j].p1.x, treeNodes[j].p1.y, treeNodes[j].p1.z);
+			aLeaf.drawLeaf(treeNodes[j].p2.x, treeNodes[j].p2.y, treeNodes[j].p2.z);*/
 		}
 		
 		glEnd();
 		
+	}
+	
+	//The final rendering, the tree should have shading, a light source to cause the shadow, etc.
+	if(stage == 5)
+	{
+		glEnable(GL_LIGHTING);
+		glEnable(GL_LIGHT0);
 	}
 	//cout << treeNodes.size() << endl;
 	
@@ -466,6 +327,14 @@ void Tree::removeBranches()
 	}
 }
 
+void Tree::createLeafPositions()
+{
+	for(int i = 0; i < treeNodes.size(); i++)
+	{
+		leafPosition.push_back({treeNodes[i].p1, treeNodes[i].p2});
+	}
+}
+
 //Calculates the total sum of branch and trunk points
 vec3 Tree::avgNormals()
 {
@@ -495,7 +364,6 @@ void Tree::spaceAlgorithm()
 {
 	float currDist, x, y, z;
 	int i, j, shortIndex;
-	vec3 temp(treeNodes[i].p2.x, treeNodes[i].p2.y, treeNodes[i].p2.z);
 	cout << "WHY?" << endl;
 	for(i = 4; i < treeNodes.size(); i++)
 	{
@@ -529,23 +397,20 @@ void Tree::spaceAlgorithm()
 		if(!neighbors.empty())
 		{
 			vec3 norm = avgNormals();
-			
-			/*cout << "p1" << endl;
-			cout << treeNodes[i].p1.x << " " << treeNodes[i].p1.y << " " << treeNodes[i].p1.z << endl;
-			cout << "p2" << endl;
-			cout << treeNodes[i].p2.x << " " << treeNodes[i].p2.y << " " << treeNodes[i].p2.z << endl;*/
-			//There might be a problem with currDist since it might not be the value going from v to v'
-			//Should fix this or look over again
-			norm = temp + (1.5f * norm);
+			norm = temp + (1.5f * norm);//There might be a problem with currDist since it might not be the value going from v to v'
 
-			treeNodes.push_back({temp, norm});//Problem here?
+			//Push new positions of p1 and p2 and clear neighbor vector array
+			treeNodes.push_back({temp, norm});
 			neighbors.clear();
 			
-			//Removes any branches that are within a trunk point (re-word later)~~~
+			//Removes any branches that are within a kill radius
+			//They won't be considered in the next iteration of the for loop
 			removeBranches();
 		}
 	}
 	
+	
+	createLeafPositions();
 	randBranch.clear();
 	for (int k = 0; k < treeNodes.size(); k++)
 	{
@@ -553,23 +418,6 @@ void Tree::spaceAlgorithm()
 		cout << "index k " << k << endl;
 		cout << treeNodes[k].p2.x << " " << treeNodes[k].p2.y << " " << treeNodes[k].p2.z << endl;
 	}
-	
-	//IMPORTANT SIDE NOTE: When randBranch becomes null, that's when the algorithm terminates.
-	
-	/*PSEUDOCODE (not complete...)
-	 * dist = default distance value
-	 * shortest is a vector array. Should hold the new tree nodes (probs dont need to add trunk points to it)
-	 * avgNormals is a function to calculate the "normalized vectors towards all the sources s in S(v)"
-	 * for i = 0 to branch.size() i++
-	 *    for j = 0 to trunk.size() j++
-	 *       currDist = abs(length.branch[i] - length.trunk[j])
-	 *       if(currDist < dist && radiusInfluence < currDist)
-	 *          dist = currDist
-	 *          newTreeNode = trunk[j] + currDist * avgNormals //avgNormals should be another function
-	 *          shortest.push_back(trunk[j])
-	 *     end
-	 * end
-	 */
 }
 	
 
