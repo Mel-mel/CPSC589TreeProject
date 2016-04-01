@@ -41,7 +41,7 @@ struct branches
 vector<glm::vec3> neighbors; //Contains only branch points (from user input?)
 vector<glm::vec3> randBranch;//Contains random branch points to allow the tree to grow branches
 vector<glm::vec3> holding;
-vector<branches> leafPosition;//Contains leaf positions to draw a large set of them
+vector<glm::vec3> leaves;
 vector<branches> treeNodes;	//Contains tree nodes generated from the space algorithm
 
 GLUquadricObj *quadratic;
@@ -81,7 +81,7 @@ Tree::Tree(vec2 hBase, vec2 hTop, vec2 w1, vec2 w2)
 void Tree::clearArray()
 {
 	treeNodes.clear();
-	leafPosition.clear();
+	leaves.clear();
 }
 
 void Tree::setValues(vec3 hBase, vec3 hTop, vec3 w1, vec3 w2)
@@ -212,41 +212,29 @@ void Tree::drawTree(int stage)
 		for(int i = 0; i < treeNodes.size(); i++)
 		{
 			glColor3f(0.5f, 0.4f, 0.2f);
-			renderCylinder_convenient(treeNodes[i].p1.x, treeNodes[i].p1.y, treeNodes[i].p1.z, treeNodes[i].p2.x, treeNodes[i].p2.y, treeNodes[i].p2.z, 0.1f, 10.0f); 
+			renderCylinder_convenient(treeNodes[i].p1.x, treeNodes[i].p1.y, treeNodes[i].p1.z, treeNodes[i].p2.x, treeNodes[i].p2.y, treeNodes[i].p2.z, 0.07f, 10.0f); 
 		}
 	}
 	if(stage == 4)
 	{
-		//add leaves **** should be adding to cylinders but for testing we are adding to the lines
+		//add leaves tp cylinders
 		glBegin(GL_LINES);
 		for(int i = 0; i < treeNodes.size(); i++)
 		{
 			glColor3f(0.5f, 0.4f, 0.2f);
-			renderCylinder_convenient(treeNodes[i].p1.x, treeNodes[i].p1.y, treeNodes[i].p1.z, treeNodes[i].p2.x, treeNodes[i].p2.y, treeNodes[i].p2.z, 0.1f, 10.0f); 
+			renderCylinder_convenient(treeNodes[i].p1.x, treeNodes[i].p1.y, treeNodes[i].p1.z, treeNodes[i].p2.x, treeNodes[i].p2.y, treeNodes[i].p2.z, 0.07f, 10.0f); 
 		}
 		
-		for(int j = 8; j < leafPosition.size(); j++)
+		for(int j = 0; j < leaves.size(); j++)
 		{
-			/*glTranslatef(-leafPosition[j].p1.x, -leafPosition[j].p1.y, -leafPosition[j].p1.z);
-			glRotatef(30.0f, 0.0, 1.0, 0.0);
-			glTranslatef(leafPosition[j].p1.x, leafPosition[j].p1.y, leafPosition[j].p1.z);
-			
-			glTranslatef(-leafPosition[j].p2.x, -leafPosition[j].p2.y, -leafPosition[j].p2.z);
-			glRotatef(30.0f, 0.0, 1.0, 0.0);
-			glTranslatef(leafPosition[j].p2.x, leafPosition[j].p2.y, leafPosition[j].p2.z);*/
-			
-			//aLeaf.drawLeaf(treeNodes[20].p1.x, treeNodes[20].p1.y, treeNodes[20].p1.z);
-			/*glBegin(GL_POINTS);
-			glColor3f(1.0f, 0.0f, 0.0f);
-			glVertex3f(treeNodes[15].p1.x, treeNodes[15].p1.y, treeNodes[15].p1.z);
-			glVertex3f(treeNodes[15].p2.x, treeNodes[15].p2.y, treeNodes[15].p2.z);
-			glEnd();
-			*/
-			aLeaf.drawLeaf(leafPosition[j].p1.x, leafPosition[j].p1.y, leafPosition[j].p1.z);
-			aLeaf.drawLeaf(leafPosition[j].p2.x, leafPosition[j].p2.y, leafPosition[j].p2.z);
-			
-			/*aLeaf.drawLeaf(treeNodes[j].p1.x, treeNodes[j].p1.y, treeNodes[j].p1.z);
-			aLeaf.drawLeaf(treeNodes[j].p2.x, treeNodes[j].p2.y, treeNodes[j].p2.z);*/
+			if(leaves[j].x < 0.5 && leaves[j].x > -0.5 && leaves[j].y < 3.0)
+			{
+				// do not draw leaves on the main trunk of the tree
+			}
+			else
+			{
+				aLeaf.drawLeaf(leaves[j].x, leaves[j].y, leaves[j].z);
+			}
 		}
 		
 		glEnd();
@@ -264,7 +252,7 @@ void Tree::drawTree(int stage)
 	//allPoints.clear();
 }
 
-//Initializing the trunk points with 6 points (to start off) this would need the user input later
+//Initializing the trunk points with 6 points (to start off)
 void Tree::initTrunk()
 {
 	float x, y, z, value;
@@ -329,9 +317,35 @@ void Tree::removeBranches()
 
 void Tree::createLeafPositions()
 {
+	vec3 tempLeafOne;
+	vec3 tempLeafTwo;
+	vec3 tempLeafThree;
 	for(int i = 0; i < treeNodes.size(); i++)
 	{
-		leafPosition.push_back({treeNodes[i].p1, treeNodes[i].p2});
+		leaves.push_back(vec3(treeNodes[i].p1.x, treeNodes[i].p1.y, treeNodes[i].p1.z)); 
+		leaves.push_back(vec3(treeNodes[i].p2.x, treeNodes[i].p2.y, treeNodes[i].p2.z));
+		
+		//p.x = (a.x+b.x)/2;
+		//p.y = (a.y+b.y)/2;
+		
+		tempLeafOne.x =  (treeNodes[i].p1.x + treeNodes[i].p2.x)/2;
+		tempLeafOne.y =  (treeNodes[i].p1.y + treeNodes[i].p2.y)/2;
+		tempLeafOne.z =  (treeNodes[i].p1.z + treeNodes[i].p2.z)/2;
+		
+		leaves.push_back(vec3(tempLeafOne.x, tempLeafOne.y, tempLeafOne.z));
+		
+		tempLeafTwo.x =  (treeNodes[i].p1.x + tempLeafOne.x)/2;
+		tempLeafTwo.y =  (treeNodes[i].p1.y + tempLeafOne.y)/2;
+		tempLeafTwo.z =  (treeNodes[i].p1.z + tempLeafOne.z)/2;
+		
+		leaves.push_back(vec3(tempLeafTwo.x, tempLeafTwo.y, tempLeafTwo.z));
+		
+		tempLeafThree.x =  (treeNodes[i].p2.x + tempLeafOne.x)/2;
+		tempLeafThree.y =  (treeNodes[i].p2.y + tempLeafOne.y)/2;
+		tempLeafThree.z =  (treeNodes[i].p2.z + tempLeafOne.z)/2;
+		
+		leaves.push_back(vec3(tempLeafThree.x, tempLeafThree.y, tempLeafThree.z));
+		
 	}
 }
 
