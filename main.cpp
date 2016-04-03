@@ -53,6 +53,8 @@ void treeSetup()
 			aTree.spaceAlgorithm();
 			initializeTree = false;
 		}
+		
+	
 }
 
 // leaf span: could possibly use this variable to add slider for amount of leafyness
@@ -64,7 +66,8 @@ void justLeaf()
 
 void fifthStage()
 {
-	// complete, rendered tree
+	//The complete rendering
+	aTree.drawTree(5);
 }
 
 void fourthStage()
@@ -84,7 +87,7 @@ void thirdStage()
 void secondStage()
 {
 	// draw the tree as points and lines
-	treeSetup();
+	//treeSetup();
 	aTree.drawTree(2);
 }
 
@@ -92,6 +95,8 @@ void secondStage()
 void firstStage()
 {
 	// draw the tree as just points
+	
+	
 	treeSetup();
 	aTree.drawTree(1);
 }
@@ -266,6 +271,8 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 	}
 	if(key == GLFW_KEY_1 && action == GLFW_PRESS)
 	{
+		glDisable(GL_LIGHTING);
+		glDisable(GL_LIGHT0);
 		if(treeD.empty())
 		{
 			getDimensions = true;
@@ -292,6 +299,8 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 	}
 	if(key == GLFW_KEY_2 && action == GLFW_PRESS)
 	{
+		glDisable(GL_LIGHTING);
+		glDisable(GL_LIGHT0);
 		if(treeD.empty())
 		{
 			getDimensions = true;
@@ -318,6 +327,8 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 	}
 	if(key == GLFW_KEY_3 && action == GLFW_PRESS)
 	{
+		glDisable(GL_LIGHTING);
+		glDisable(GL_LIGHT0);
 		if(treeD.empty())
 		{
 			getDimensions = true;
@@ -343,6 +354,8 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 	}
 	if(key == GLFW_KEY_4 && action == GLFW_PRESS)
 	{
+		glDisable(GL_LIGHTING);
+		glDisable(GL_LIGHT0);
 		if(treeD.empty())
 		{
 			getDimensions = true;

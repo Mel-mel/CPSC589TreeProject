@@ -40,7 +40,6 @@ struct branches
 
 vector<glm::vec3> neighbors; //Contains only branch points (from user input?)
 vector<glm::vec3> randBranch;//Contains random branch points to allow the tree to grow branches
-vector<glm::vec3> holding;
 vector<glm::vec3> leaves;
 vector<branches> treeNodes;	//Contains tree nodes generated from the space algorithm
 
@@ -157,7 +156,7 @@ void Tree::genRandomBranch()
 			 randY += 1.0f;
 		}
         randBranch.push_back({ randX, randY, randZ });
-        holding.push_back({randX, randY, randZ});
+        
         srand(i+2);
       //  cout << randX << " " << randY << " " << randZ << endl;
     }
@@ -244,9 +243,52 @@ void Tree::drawTree(int stage)
 	//The final rendering, the tree should have shading, a light source to cause the shadow, etc.
 	if(stage == 5)
 	{
+		
+		//add leaves tp cylinders
+		glBegin(GL_LINES);
+		for(int i = 0; i < treeNodes.size(); i++)
+		{
+			//glColor3f(0.5f, 0.4f, 0.2f);
+			renderCylinder_convenient(treeNodes[i].p1.x, treeNodes[i].p1.y, treeNodes[i].p1.z, treeNodes[i].p2.x, treeNodes[i].p2.y, treeNodes[i].p2.z, 0.07f, 10.0f); 
+		}	
+		glEnd();
+		
+		
+		
+		GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+		GLfloat mat_shininess[] = { 50.0 };
+		GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
+		glClearColor (0.0, 0.0, 0.0, 0.0);
+		glShadeModel (GL_SMOOTH);
+		
+		GLfloat brown[] = {0.5f, 0.4f, 0.2f, 1.f};
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, brown);
+		glMaterialfv(GL_FRONT, GL_AMBIENT, brown);
+		glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+		glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+		glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+
 		glEnable(GL_LIGHTING);
 		glEnable(GL_LIGHT0);
-	}
+		glEnable(GL_DEPTH_TEST);
+
+		
+		glFlush ();
+
+
+		for(int j = 0; j < leaves.size(); j++)
+		{
+			if(leaves[j].x < 0.5 && leaves[j].x > -0.5 && leaves[j].y < 3.0)
+			{
+				// do not draw leaves on the main trunk of the tree
+			}
+			else
+			{
+				glColor3f(0.184f, 0.409f, 0.184f);
+				aLeaf.drawLeaf(leaves[j].x, leaves[j].y, leaves[j].z);
+			}
+			}
+		}
 	//cout << treeNodes.size() << endl;
 	
 	//allPoints.clear();
