@@ -243,39 +243,39 @@ void Tree::drawTree(int stage)
 	//The final rendering, the tree should have shading, a light source to cause the shadow, etc.
 	if(stage == 5)
 	{
-		
-		//add leaves tp cylinders
-		glBegin(GL_LINES);
-		for(int i = 0; i < treeNodes.size(); i++)
-		{
-			//glColor3f(0.5f, 0.4f, 0.2f);
-			renderCylinder_convenient(treeNodes[i].p1.x, treeNodes[i].p1.y, treeNodes[i].p1.z, treeNodes[i].p2.x, treeNodes[i].p2.y, treeNodes[i].p2.z, 0.07f, 10.0f); 
-		}	
-		glEnd();
-		
-		
-		
-		GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+		//Render the color for the cylinder
+		glPushMatrix();
+		GLfloat diffuse[]={0.9, 0.9, 0.9, 1.0};
+		GLfloat specular[]={1.0,1.0, 1.0, 1.0};
 		GLfloat mat_shininess[] = { 50.0 };
 		GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
 		glClearColor (0.0, 0.0, 0.0, 0.0);
 		glShadeModel (GL_SMOOTH);
 		
-		GLfloat brown[] = {0.5f, 0.4f, 0.2f, 1.f};
+		GLfloat brown[] = {0.7f, 0.5f, 0.2f, 1.f};
 		glMaterialfv(GL_FRONT, GL_DIFFUSE, brown);
-		glMaterialfv(GL_FRONT, GL_AMBIENT, brown);
-		glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+		glMaterialfv(GL_FRONT, GL_AMBIENT, diffuse);
+		glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
 		glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 		glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-
+			
 		glEnable(GL_LIGHTING);
 		glEnable(GL_LIGHT0);
 		glEnable(GL_DEPTH_TEST);
-
-		
 		glFlush ();
+		glBegin(GL_LINES);
+		for(int i = 0; i < treeNodes.size(); i++)
+		{
+			//Render the cylinders
+			renderCylinder_convenient(treeNodes[i].p1.x, treeNodes[i].p1.y, treeNodes[i].p1.z, treeNodes[i].p2.x, treeNodes[i].p2.y, treeNodes[i].p2.z, 0.08f, 10.0f); 
+		}	
+		glEnd();
+		
+		//Disable the lighting for the leaves so that the leaves stay green
+		glDisable(GL_LIGHTING);
+		glDisable(GL_LIGHT0);
 
-
+		//Render the leaves onto the tree
 		for(int j = 0; j < leaves.size(); j++)
 		{
 			if(leaves[j].x < 0.5 && leaves[j].x > -0.5 && leaves[j].y < 3.0)
@@ -289,9 +289,6 @@ void Tree::drawTree(int stage)
 			}
 			}
 		}
-	//cout << treeNodes.size() << endl;
-	
-	//allPoints.clear();
 }
 
 //Initializing the trunk points with 6 points (to start off)
@@ -310,14 +307,6 @@ void Tree::initTrunk()
 		treeNodes.push_back({temp, temp2});
 		temp.y = temp.y + value;
 		temp2.y = temp2.y + value;
-		/*cout << "p1" << endl;
-			cout << treeNodes[l].p1.x << " " << treeNodes[l].p1.y << " " << treeNodes[l].p1.z << endl;
-			cout << "p2" << endl;
-			cout << treeNodes[l].p2.x << " " << treeNodes[l].p2.y << " " << treeNodes[l].p2.z << endl;
-			cout << endl;*/
-		/*cout << allPoints[l].x << endl;
-		cout << allPoints[l].y << endl;
-		cout << allPoints[l].z << endl;*/
 	}
 }
 
@@ -366,9 +355,6 @@ void Tree::createLeafPositions()
 	{
 		leaves.push_back(vec3(treeNodes[i].p1.x, treeNodes[i].p1.y, treeNodes[i].p1.z)); 
 		leaves.push_back(vec3(treeNodes[i].p2.x, treeNodes[i].p2.y, treeNodes[i].p2.z));
-		
-		//p.x = (a.x+b.x)/2;
-		//p.y = (a.y+b.y)/2;
 		
 		tempLeafOne.x =  (treeNodes[i].p1.x + treeNodes[i].p2.x)/2;
 		tempLeafOne.y =  (treeNodes[i].p1.y + treeNodes[i].p2.y)/2;
@@ -447,13 +433,12 @@ void Tree::spaceAlgorithm()
 			{	
 				neighbors.push_back(temp);
 				neighbors.push_back(randBranch[j]);
-				//treeNodes.push_back({i, norm});//Problem here?
 			}
 		}
 		if(!neighbors.empty())
 		{
 			vec3 norm = avgNormals();
-			norm = temp + (1.5f * norm);//There might be a problem with currDist since it might not be the value going from v to v'
+			norm = temp + (1.0f * norm);//There might be a problem with currDist since it might not be the value going from v to v'
 
 			//Push new positions of p1 and p2 and clear neighbor vector array
 			treeNodes.push_back({temp, norm});
