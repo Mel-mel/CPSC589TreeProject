@@ -140,12 +140,12 @@ void Tree::genRandomBranch()
 	float randX, randY, randZ;
 	randBranch.clear();
     srand(time(NULL));
+    cout << "tree height" << "\t" << tree_height << endl;
     for (int i = 0; i < numOfBranches; i++)
     {
 		
         randX = ((float)rand() / (float)(RAND_MAX)) * (maxValue - minValue) + minValue;
         randY = ((float)rand() / (float)(RAND_MAX)) * maxValue * tree_height; //User input for height
-        cout << "tree height" << "\t" << tree_height << endl;
         randZ = ((float)rand() / (float)(RAND_MAX)) * (maxValue - minValue) + minValue;
      
 		//Make sure that the branches are at least above the highest trunk point
@@ -440,7 +440,7 @@ void Tree::spaceAlgorithm()
 {
 	float currDist, x, y, z;
 	int i, j, shortIndex;
-	cout << "WHY?" << endl;
+	//cout << "WHY?" << endl;
 	for(i = 4; i < treeNodes.size(); i++)
 	{
 		//cout << i << endl;
@@ -487,12 +487,12 @@ void Tree::spaceAlgorithm()
 	
 	createLeafPositions();
 	randBranch.clear();
-	for (int k = 0; k < treeNodes.size(); k++)
+	/*for (int k = 0; k < treeNodes.size(); k++)
 	{
 		cout << endl;
 		cout << "index k " << k << endl;
 		cout << treeNodes[k].p2.x << " " << treeNodes[k].p2.y << " " << treeNodes[k].p2.z << endl;
-	}
+	}*/
 }
 	
 
