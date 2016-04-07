@@ -22,6 +22,7 @@ float temp = 0.5f;
 int numOfBranches = 300;
 float tree_height = 0;
 Leaf aLeaf;
+int degree = 0;
 
 //Values to change how the branches are drawn
 float x_change = 0.1f;
@@ -162,8 +163,10 @@ void Tree::genRandomBranch()
     }
 }
 
-void Tree::drawTree(int stage)
+void Tree::drawTree(int stage, int leafiness)
 {
+	int leaf_skip = leafiness;
+	
 	//Just points of the tree
 	if(stage == 1)
 	{
@@ -220,11 +223,11 @@ void Tree::drawTree(int stage)
 		glBegin(GL_LINES);
 		for(int i = 0; i < treeNodes.size(); i++)
 		{
-			glColor3f(0.5f, 0.4f, 0.2f);
+			glColor3f(0.5f, 0.4f, 0.25f);
 			renderCylinder_convenient(treeNodes[i].p1.x, treeNodes[i].p1.y, treeNodes[i].p1.z, treeNodes[i].p2.x, treeNodes[i].p2.y, treeNodes[i].p2.z, 0.07f, 10.0f); 
 		}
 		
-		for(int j = 0; j < leaves.size(); j++)
+		for(int j = 0; j < leaves.size(); j += 1)
 		{
 			if(leaves[j].x < 0.5 && leaves[j].x > -0.5 && leaves[j].y < 3.0)
 			{
@@ -246,17 +249,17 @@ void Tree::drawTree(int stage)
 		//Render the color for the cylinder
 		glPushMatrix();
 		GLfloat diffuse[]={0.9, 0.9, 0.9, 1.0};
-		GLfloat specular[]={1.0,1.0, 1.0, 1.0};
-		GLfloat mat_shininess[] = { 50.0 };
+		GLfloat specular[]={0.3,0.3, 0.3, 1.0};
+		GLfloat mat_shininess[] = { 15.0 };
 		GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
 		glClearColor (0.0, 0.0, 0.0, 0.0);
 		glShadeModel (GL_SMOOTH);
 		
 		GLfloat brown[] = {0.7f, 0.5f, 0.2f, 1.f};
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, brown);
-		glMaterialfv(GL_FRONT, GL_AMBIENT, diffuse);
-		glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
-		glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, brown);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, diffuse);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_shininess);
 		glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 			
 		glEnable(GL_LIGHTING);
@@ -275,18 +278,43 @@ void Tree::drawTree(int stage)
 		glDisable(GL_LIGHTING);
 		glDisable(GL_LIGHT0);
 
-		//Render the leaves onto the tree
-		for(int j = 0; j < leaves.size(); j++)
-		{
-			if(leaves[j].x < 0.5 && leaves[j].x > -0.5 && leaves[j].y < 3.0)
+			//Render the leaves onto the tree
+			for(int j = 0; j < leaves.size(); j+= 1)
 			{
-				// do not draw leaves on the main trunk of the tree
-			}
-			else
-			{
-				glColor3f(0.184f, 0.409f, 0.184f);
-				aLeaf.drawLeaf(leaves[j].x, leaves[j].y, leaves[j].z);
-			}
+				if(leaves[j].x < 0.5 && leaves[j].x > -0.5 && leaves[j].y < 2.0)
+				{
+					// do not draw leaves on the main trunk of the tree
+				}
+				else
+				{
+					if(((int)leaves[j].y)%2 == 0){degree = 90;}
+					if(((int)leaves[j].x)%3 == 0){degree = 120;}
+					if(((int)leaves[j].z)%5 == 0){degree = 70;}
+					glColor3f(0.184f, 0.409f, 0.184f);
+					glMatrixMode(GL_MODELVIEW);
+					glPushMatrix();
+					glTranslatef(leaves[j].x, leaves[j].y, leaves[j].z);
+					if(((int)leaves[j].z)%2 == 0){glRotatef(degree, 0.0f, 0.0f, 1.0f);}
+					if(((int)leaves[j].y)%3 == 0){glRotatef(degree, 1.0f, 0.0f, 0.0f);}
+					if(((int)leaves[j].x)%5 == 0){glRotatef(degree, 0.0f, 1.0f, 0.0f);}
+					glTranslatef(-leaves[j].x, -leaves[j].y, -leaves[j].z);
+					aLeaf.drawLeaf(leaves[j].x, leaves[j].y, leaves[j].z);
+					glPopMatrix();
+					
+					if(((int)leaves[j].x)%2 == 0){degree = 90;}
+					if(((int)leaves[j].z)%3 == 0){degree = 120;}
+					if(((int)leaves[j].y)%5 == 0){degree = 70;}
+					glColor3f(0.184f, 0.409f, 0.184f);
+					glMatrixMode(GL_MODELVIEW);
+					glPushMatrix();
+					glTranslatef(leaves[j].x, leaves[j].y, leaves[j].z);
+					if(((int)leaves[j].z)%2 == 0){glRotatef(degree, 0.0f, 0.0f, 1.0f);}
+					if(((int)leaves[j].x)%3 == 0){glRotatef(degree, 1.0f, 0.0f, 0.0f);}
+					if(((int)leaves[j].y)%5 == 0){glRotatef(degree, 0.0f, 1.0f, 0.0f);}
+					glTranslatef(-leaves[j].x, -leaves[j].y, -leaves[j].z);
+					aLeaf.drawLeaf(leaves[j].x, leaves[j].y, leaves[j].z);
+					glPopMatrix();
+				}
 			}
 		}
 }

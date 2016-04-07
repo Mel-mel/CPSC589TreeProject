@@ -41,7 +41,7 @@ public:
 	
 	void spaceAlgorithm();
 	void initTrunk();
-	void drawTree(int stage);
+	void drawTree(int stage, int leafiness);
 	void genRandomBranch();
 	vec3 avgNormals();
 	void removeBranches();

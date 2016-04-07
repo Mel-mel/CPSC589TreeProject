@@ -21,6 +21,7 @@ float xTranslate = 0;
 float yTranslate = 0;
 int count = 0; // initial order of user input for dimensions
 float zoom = 1;
+int leaf_amount = 1;
 std::string str = "Click again to render the tree!";
 bool getDimensions = true;
 bool doneDimensions = false;
@@ -67,38 +68,34 @@ void justLeaf()
 void fifthStage()
 {
 	//The complete rendering
-	aTree.drawTree(5);
+	aTree.drawTree(5, leaf_amount);
 }
 
 void fourthStage()
 {
 	// add the leaves
-	aTree.drawTree(4);
+	aTree.drawTree(4, leaf_amount);
 	
 }
 
 void thirdStage()
 {
 	// draw the tree with cylinders
-	aTree.drawTree(3);
-	//aTree.renderTreeStageThree();
+	aTree.drawTree(3, 0);
 }
 
 void secondStage()
 {
 	// draw the tree as points and lines
-	//treeSetup();
-	aTree.drawTree(2);
+	aTree.drawTree(2, 0);
 }
 
 //Render the first stage of the tree (just the outlines of a tree)
 void firstStage()
 {
 	// draw the tree as just points
-	
-	
 	treeSetup();
-	aTree.drawTree(1);
+	aTree.drawTree(1, 0);
 }
 
 void renderBasicHeight()
@@ -239,6 +236,20 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 			zoom = zoom;
 		}
 	}
+	if(key == GLFW_KEY_N && (action == GLFW_PRESS || action == GLFW_REPEAT))
+	{
+		if(leaf_amount < 7)
+		{
+			leaf_amount--;
+		}
+	}
+	if(key == GLFW_KEY_M && (action == GLFW_PRESS || action == GLFW_REPEAT))
+	{
+		if(leaf_amount > 1)
+		{
+			leaf_amount--;
+		}
+	}
 	if(key == GLFW_KEY_R && action == GLFW_PRESS)
 	{
 		treeD.clear();
@@ -260,6 +271,8 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 	if(key == GLFW_KEY_L && action == GLFW_PRESS)
 	{
 		zoom = 0;
+		xTranslate = 0;
+		yTranslate = 0;
 		getDimensions = false;
 		doneDimensions = false;
 		stageOne = false;
@@ -286,7 +299,7 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 		}
 		else
 		{
-			zoom =11.8;
+			//zoom =11.8;
 			getDimensions = false;
 			doneDimensions = false;
 			stageOne = true;
@@ -314,7 +327,7 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 		}
 		else
 		{
-			zoom = 11.8;
+			//zoom = 11.8;
 			getDimensions = false;
 			doneDimensions = false;
 			stageOne = false;
@@ -369,7 +382,8 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 		}
 		else
 		{
-			zoom = 11.8;
+			//zoom = 11.8;
+			leaf_amount = 0;
 			getDimensions = false;
 			doneDimensions = false;
 			stageOne = false;
@@ -395,6 +409,8 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 		}
 		else
 		{
+			//zoom = 11.8;
+			leaf_amount = 0;
 			getDimensions = false;
 			doneDimensions = false;
 			stageOne = false;
