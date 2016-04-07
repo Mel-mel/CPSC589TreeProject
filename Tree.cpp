@@ -22,7 +22,9 @@ float temp = 0.5f;
 int numOfBranches = 300;
 float tree_height = 0;
 Leaf aLeaf;
-int degree = 0;
+int degreeX, degreeY, degreeZ;;
+int randomLeaf = 0;
+int randomX, randomY, randomZ;
 
 //Values to change how the branches are drawn
 float x_change = 0.1f;
@@ -46,11 +48,6 @@ vector<branches> treeNodes;	//Contains tree nodes generated from the space algor
 
 GLUquadricObj *quadratic;
 
-/*void Tree::initializeCylinders()
-{
-	quadratic = gluNewQuadric();
-	gluQuadricNormals(quadratic, GLU_SMOOTH);
-}*/
 Tree::Tree()
 {
 	//blank initializer
@@ -159,7 +156,6 @@ void Tree::genRandomBranch()
         randBranch.push_back({ randX, randY, randZ });
         
         srand(i+2);
-      //  cout << randX << " " << randY << " " << randZ << endl;
     }
 }
 
@@ -182,7 +178,7 @@ void Tree::drawTree(int stage, int leafiness)
 	}	
 	
 	//Points and lines of the tree. A line colored from blue to red shows how a line is being 
-	//drawn to anothe point
+	//drawn to another point
 	if(stage == 2)
 	{
 		glBegin(GL_POINTS);
@@ -277,46 +273,52 @@ void Tree::drawTree(int stage, int leafiness)
 		//Disable the lighting for the leaves so that the leaves stay green
 		glDisable(GL_LIGHTING);
 		glDisable(GL_LIGHT0);
-
-			//Render the leaves onto the tree
-			for(int j = 0; j < leaves.size(); j+= 1)
+		
+		srand(time(NULL));
+		randomX = (rand() / RAND_MAX) * (maxValue - minValue) + minValue;
+		randomY = (rand() / RAND_MAX) * (maxValue - minValue) + minValue;
+		randomZ = (rand() / RAND_MAX) * (maxValue - minValue) + minValue;
+		//Render the leaves onto the tree
+		for(int j = 0; j < leaves.size(); j+= 1)
+		{
+			if(leaves[j].x < 0.5 && leaves[j].x > -0.5 && leaves[j].y < 2.0)
 			{
-				if(leaves[j].x < 0.5 && leaves[j].x > -0.5 && leaves[j].y < 2.0)
-				{
-					// do not draw leaves on the main trunk of the tree
-				}
-				else
-				{
-					if(((int)leaves[j].y)%2 == 0){degree = 90;}
-					if(((int)leaves[j].x)%3 == 0){degree = 120;}
-					if(((int)leaves[j].z)%5 == 0){degree = 70;}
-					glColor3f(0.184f, 0.409f, 0.184f);
-					glMatrixMode(GL_MODELVIEW);
-					glPushMatrix();
-					glTranslatef(leaves[j].x, leaves[j].y, leaves[j].z);
-					if(((int)leaves[j].z)%2 == 0){glRotatef(degree, 0.0f, 0.0f, 1.0f);}
-					if(((int)leaves[j].y)%3 == 0){glRotatef(degree, 1.0f, 0.0f, 0.0f);}
-					if(((int)leaves[j].x)%5 == 0){glRotatef(degree, 0.0f, 1.0f, 0.0f);}
-					glTranslatef(-leaves[j].x, -leaves[j].y, -leaves[j].z);
-					aLeaf.drawLeaf(leaves[j].x, leaves[j].y, leaves[j].z);
-					glPopMatrix();
-					
-					if(((int)leaves[j].x)%2 == 0){degree = 90;}
-					if(((int)leaves[j].z)%3 == 0){degree = 120;}
-					if(((int)leaves[j].y)%5 == 0){degree = 70;}
-					glColor3f(0.184f, 0.409f, 0.184f);
-					glMatrixMode(GL_MODELVIEW);
-					glPushMatrix();
-					glTranslatef(leaves[j].x, leaves[j].y, leaves[j].z);
-					if(((int)leaves[j].z)%2 == 0){glRotatef(degree, 0.0f, 0.0f, 1.0f);}
-					if(((int)leaves[j].x)%3 == 0){glRotatef(degree, 1.0f, 0.0f, 0.0f);}
-					if(((int)leaves[j].y)%5 == 0){glRotatef(degree, 0.0f, 1.0f, 0.0f);}
-					glTranslatef(-leaves[j].x, -leaves[j].y, -leaves[j].z);
-					aLeaf.drawLeaf(leaves[j].x, leaves[j].y, leaves[j].z);
-					glPopMatrix();
-				}
+				// do not draw leaves on the main trunk of the tree
+			}
+			else
+			{
+				
+				
+				if(((int)leaves[j].y)%randomX == 0){degreeX = 90;}
+				if(((int)leaves[j].x)%randomY == 0){degreeY = 120;}
+				if(((int)leaves[j].z)%randomZ == 0){degreeZ = 70;}
+				glColor3f(0.184f, 0.409f, 0.184f);
+				glMatrixMode(GL_MODELVIEW);
+				glPushMatrix();
+				glTranslatef(leaves[j].x, leaves[j].y, leaves[j].z);
+				if(((int)leaves[j].z)%randomX == 0){glRotatef(degreeZ, 0.0f, 0.0f, 1.0f);}
+				if(((int)leaves[j].y)%randomY == 0){glRotatef(degreeX, 1.0f, 0.0f, 0.0f);}
+				if(((int)leaves[j].x)%randomZ == 0){glRotatef(degreeY, 0.0f, 1.0f, 0.0f);}
+				glTranslatef(-leaves[j].x, -leaves[j].y, -leaves[j].z);
+				aLeaf.drawLeaf(leaves[j].x, leaves[j].y, leaves[j].z);
+				glPopMatrix();
+				
+				if(((int)leaves[j].x)%2 == 0){degreeZ = 90;}
+				if(((int)leaves[j].z)%3 == 0){degreeX = 120;}
+				if(((int)leaves[j].y)%5 == 0){degreeY = 70;}
+				glColor3f(0.184f, 0.409f, 0.184f);
+				glMatrixMode(GL_MODELVIEW);
+				glPushMatrix();
+				glTranslatef(leaves[j].x, leaves[j].y, leaves[j].z);
+				if(((int)leaves[j].z)%2 == 0){glRotatef(degreeX, 0.0f, 0.0f, 1.0f);}
+				if(((int)leaves[j].x)%3 == 0){glRotatef(degreeY, 1.0f, 0.0f, 0.0f);}
+				if(((int)leaves[j].y)%5 == 0){glRotatef(degreeZ, 0.0f, 1.0f, 0.0f);}
+				glTranslatef(-leaves[j].x, -leaves[j].y, -leaves[j].z);
+				aLeaf.drawLeaf(leaves[j].x, leaves[j].y, leaves[j].z);
+				glPopMatrix();
 			}
 		}
+	}
 }
 
 //Initializing the trunk points with 6 points (to start off)
@@ -374,6 +376,10 @@ void Tree::removeBranches()
 	}
 }
 
+/*Generate new leaf positions to attach to the tree
+ * They are created by subdividing the points between two tree nodes and repeating 
+ * that process a few times. The new positions are stored and used for rendering.
+ */ 
 void Tree::createLeafPositions()
 {
 	vec3 tempLeafOne;

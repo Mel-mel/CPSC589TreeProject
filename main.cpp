@@ -436,13 +436,13 @@ void mouseClick (GLFWwindow *sender, int button, int action, int mods) {
 			}
 			count++;
 		}
-		else if(count > 1)
+		else if(count == 2)
 		{
 			stageOne = true;
 			doneDimensions = false; 
 			getDimensions = false;
 			zoom = 11.8;
-			
+			count++;//This is to prevent the tree nodes from being drawn in the other stages
 		}
 		
 	}
@@ -459,7 +459,7 @@ int main (int argc, char** argv) {
 		return 1; // if it is not initialized, exit program
 	glutInit(&argc,  argv);
 glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
-	window = glfwCreateWindow(800, 900, "My Window", NULL, NULL); // size and name of window
+	window = glfwCreateWindow(800, 800, "My Window", NULL, NULL); // size and name of window
 	if (!window)
 		return 1;
 
