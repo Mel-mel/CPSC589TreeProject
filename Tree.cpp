@@ -22,7 +22,7 @@ float temp = 0.5f;
 int numOfBranches = 300;
 float tree_height = 0;
 Leaf aLeaf;
-int degreeX, degreeY, degreeZ;;
+int degreeX, degreeY, degreeZ;
 int randomLeaf = 0;
 int randomX, randomY, randomZ;
 
@@ -48,6 +48,11 @@ vector<branches> treeNodes;	//Contains tree nodes generated from the space algor
 
 GLUquadricObj *quadratic;
 
+/*void Tree::initializeCylinders()
+{
+	quadratic = gluNewQuadric();
+	gluQuadricNormals(quadratic, GLU_SMOOTH);
+}*/
 Tree::Tree()
 {
 	//blank initializer
@@ -140,12 +145,12 @@ void Tree::genRandomBranch()
 	float randX, randY, randZ;
 	randBranch.clear();
     srand(time(NULL));
-    cout << "tree height" << "\t" << tree_height << endl;
     for (int i = 0; i < numOfBranches; i++)
     {
 		
         randX = ((float)rand() / (float)(RAND_MAX)) * (maxValue - minValue) + minValue;
         randY = ((float)rand() / (float)(RAND_MAX)) * maxValue * tree_height; //User input for height
+        cout << "tree height" << "\t" << tree_height << endl;
         randZ = ((float)rand() / (float)(RAND_MAX)) * (maxValue - minValue) + minValue;
      
 		//Make sure that the branches are at least above the highest trunk point
@@ -156,13 +161,12 @@ void Tree::genRandomBranch()
         randBranch.push_back({ randX, randY, randZ });
         
         srand(i+2);
+      //  cout << randX << " " << randY << " " << randZ << endl;
     }
 }
 
 void Tree::drawTree(int stage, int leafiness)
 {
-	int leaf_skip = leafiness;
-	
 	//Just points of the tree
 	if(stage == 1)
 	{
@@ -178,7 +182,7 @@ void Tree::drawTree(int stage, int leafiness)
 	}	
 	
 	//Points and lines of the tree. A line colored from blue to red shows how a line is being 
-	//drawn to another point
+	//drawn to anothe point
 	if(stage == 2)
 	{
 		glBegin(GL_POINTS);
@@ -219,11 +223,11 @@ void Tree::drawTree(int stage, int leafiness)
 		glBegin(GL_LINES);
 		for(int i = 0; i < treeNodes.size(); i++)
 		{
-			glColor3f(0.5f, 0.4f, 0.25f);
+			glColor3f(0.5f, 0.4f, 0.2f);
 			renderCylinder_convenient(treeNodes[i].p1.x, treeNodes[i].p1.y, treeNodes[i].p1.z, treeNodes[i].p2.x, treeNodes[i].p2.y, treeNodes[i].p2.z, 0.07f, 10.0f); 
 		}
 		
-		for(int j = 0; j < leaves.size(); j += 1)
+		for(int j = 0; j < leaves.size(); j++)
 		{
 			if(leaves[j].x < 0.5 && leaves[j].x > -0.5 && leaves[j].y < 3.0)
 			{
@@ -279,7 +283,7 @@ void Tree::drawTree(int stage, int leafiness)
 		randomY = (rand() / RAND_MAX) * (maxValue - minValue) + minValue;
 		randomZ = (rand() / RAND_MAX) * (maxValue - minValue) + minValue;
 		//Render the leaves onto the tree
-		for(int j = 0; j < leaves.size(); j+= 1)
+		for(int j = 0; j < leaves.size(); j+= leafiness)
 		{
 			if(leaves[j].x < 0.5 && leaves[j].x > -0.5 && leaves[j].y < 2.0)
 			{
@@ -287,8 +291,11 @@ void Tree::drawTree(int stage, int leafiness)
 			}
 			else
 			{
-				
-				
+				/*
+				 * The following code places the individual leaves on points on
+				 * the branch. The transformations apply to the indovidual leaves to make
+				 * them random in their orientation on the tree. 
+				 */
 				if(((int)leaves[j].y)%randomX == 0){degreeX = 90;}
 				if(((int)leaves[j].x)%randomY == 0){degreeY = 120;}
 				if(((int)leaves[j].z)%randomZ == 0){degreeZ = 70;}
@@ -376,10 +383,6 @@ void Tree::removeBranches()
 	}
 }
 
-/*Generate new leaf positions to attach to the tree
- * They are created by subdividing the points between two tree nodes and repeating 
- * that process a few times. The new positions are stored and used for rendering.
- */ 
 void Tree::createLeafPositions()
 {
 	vec3 tempLeafOne;
@@ -487,12 +490,6 @@ void Tree::spaceAlgorithm()
 	
 	createLeafPositions();
 	randBranch.clear();
-	/*for (int k = 0; k < treeNodes.size(); k++)
-	{
-		cout << endl;
-		cout << "index k " << k << endl;
-		cout << treeNodes[k].p2.x << " " << treeNodes[k].p2.y << " " << treeNodes[k].p2.z << endl;
-	}*/
 }
 	
 

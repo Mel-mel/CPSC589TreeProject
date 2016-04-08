@@ -21,7 +21,6 @@ float xTranslate = 0;
 float yTranslate = 0;
 int count = 0; // initial order of user input for dimensions
 float zoom = 1;
-int leaf_amount = 1;
 std::string str = "Click again to render the tree!";
 bool getDimensions = true;
 bool doneDimensions = false;
@@ -32,6 +31,7 @@ bool stageThree = false;
 bool stageFour = false;
 bool stageFive = false;
 bool renderLeaf = false;
+int leaf_amount = 1;
 
 Tree aTree;
 Leaf leaf;
@@ -81,13 +81,15 @@ void fourthStage()
 void thirdStage()
 {
 	// draw the tree with cylinders
-	aTree.drawTree(3, 0);
+	aTree.drawTree(3, 1);
+	//aTree.renderTreeStageThree();
 }
 
 void secondStage()
 {
 	// draw the tree as points and lines
-	aTree.drawTree(2, 0);
+	//treeSetup();
+	aTree.drawTree(2, 1);
 }
 
 //Render the first stage of the tree (just the outlines of a tree)
@@ -95,7 +97,7 @@ void firstStage()
 {
 	// draw the tree as just points
 	treeSetup();
-	aTree.drawTree(1, 0);
+	aTree.drawTree(1, 1);
 }
 
 void renderBasicHeight()
@@ -238,9 +240,9 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 	}
 	if(key == GLFW_KEY_N && (action == GLFW_PRESS || action == GLFW_REPEAT))
 	{
-		if(leaf_amount < 7)
+		if(leaf_amount < 6)
 		{
-			leaf_amount--;
+			leaf_amount++;
 		}
 	}
 	if(key == GLFW_KEY_M && (action == GLFW_PRESS || action == GLFW_REPEAT))
@@ -270,7 +272,8 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 	}
 	if(key == GLFW_KEY_L && action == GLFW_PRESS)
 	{
-		zoom = 0;
+		zoom = 1;
+		yRotate = 0;
 		xTranslate = 0;
 		yTranslate = 0;
 		getDimensions = false;
@@ -299,7 +302,7 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 		}
 		else
 		{
-			//zoom =11.8;
+			zoom =11.8;
 			getDimensions = false;
 			doneDimensions = false;
 			stageOne = true;
@@ -327,7 +330,7 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 		}
 		else
 		{
-			//zoom = 11.8;
+			zoom = 11.8;
 			getDimensions = false;
 			doneDimensions = false;
 			stageOne = false;
@@ -382,8 +385,7 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 		}
 		else
 		{
-			//zoom = 11.8;
-			leaf_amount = 0;
+			zoom = 11.8;
 			getDimensions = false;
 			doneDimensions = false;
 			stageOne = false;
@@ -409,8 +411,6 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 		}
 		else
 		{
-			//zoom = 11.8;
-			leaf_amount = 0;
 			getDimensions = false;
 			doneDimensions = false;
 			stageOne = false;
@@ -442,7 +442,7 @@ void mouseClick (GLFWwindow *sender, int button, int action, int mods) {
 			doneDimensions = false; 
 			getDimensions = false;
 			zoom = 11.8;
-			count++;//This is to prevent the tree nodes from being drawn in the other stages
+			count++;
 		}
 		
 	}
@@ -459,7 +459,7 @@ int main (int argc, char** argv) {
 		return 1; // if it is not initialized, exit program
 	glutInit(&argc,  argv);
 glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
-	window = glfwCreateWindow(800, 800, "My Window", NULL, NULL); // size and name of window
+	window = glfwCreateWindow(800, 900, "My Window", NULL, NULL); // size and name of window
 	if (!window)
 		return 1;
 

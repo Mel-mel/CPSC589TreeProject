@@ -31,30 +31,19 @@ Leaf::Leaf()
 	//Blank initializer
 }
 
-/* 
- * Draws a leaf on the tree given a point on the branch
- */
 void Leaf::drawLeaf(float x, float y, float z)
 {
 	x_start = x;
 	y_start = y;
 	z_start = z;
 	
-	//cout << "Points: " << x_start << " " << y_start << " " << z_start << " " << endl;
-	
 	x_delta = y_delta = z_delta = stem_length = 0.1; // if you change this value, you change the size of the leaf
 	
-	// adding the points of the leaf that define the stem
 	splitLeafPoints.push_back(vec3(x_start, y_start, z_start));
 	splitLeafPoints.push_back(vec3(x_start, y_start + stem_length, z_start + z_delta));	
 	
-	//glMatrixMode(GL_MODELVIEW);
-	//glTranslatef(-splitLeafPoints[0].x, -splitLeafPoints[0].y, -splitLeafPoints[0].z);
-	//cout << -splitLeafPoints[0].x << " " << -splitLeafPoints[0].y << " " << -splitLeafPoints[0].z << endl;
-	//glRotatef(15.0f, 0.0f, 1.0f, 0.0f);
-	//glTranslatef(x_start, y_start, z_start);
 	
-	// defining the initial stem of the leaf
+	
 	glBegin(GL_LINES);
 	glColor3f(0.184f, 0.409f, 0.184f);
 	glVertex3f(splitLeafPoints[0].x, splitLeafPoints[0].y, splitLeafPoints[0].z);
@@ -63,8 +52,6 @@ void Leaf::drawLeaf(float x, float y, float z)
 	
 	fractals(start_index);
 	
-	// drawing the shape of the leaf by connecting the outer points 
-	// to the main stem to create the fold in the leaf
 	glBegin(GL_POLYGON);
 	glColor3f(0.184f, 0.409f, 0.184f);
 	int i = start_index;
@@ -99,7 +86,6 @@ void Leaf::drawLeaf(float x, float y, float z)
 	glVertex3f(splitLeafPoints[i].x, splitLeafPoints[i].y, splitLeafPoints[i].z);
 	glEnd();
 	
-	// Drawing the veins of the leaf
 	glBegin(GL_LINES);
 	for(int i = 1; i < 9; i+=3)
 	{
@@ -124,9 +110,6 @@ void Leaf::drawLeaf(float x, float y, float z)
 	}
 	glEnd();
 	splitLeafPoints.clear();
-	x_start = 0;
-	y_start = 0;
-	z_start = 0;
 }
 
 void Leaf::drawGenericLeaf()
@@ -137,11 +120,9 @@ void Leaf::drawGenericLeaf()
 	x_delta = y_delta = z_delta = 0.1;
 	stem_length = 0.1;
 	
-	// adding the points of the leaf that define the stem
 	splitLeafPoints.push_back(vec3(x_start, y_start, z_start));
 	splitLeafPoints.push_back(vec3(x_start, y_start + stem_length, z_start + z_delta));	
 	
-	// defining the initial stem of the leaf
 	glBegin(GL_LINES);
 	glColor3f(0.184f, 0.409f, 0.184f);
 	glVertex3f(splitLeafPoints[0].x, splitLeafPoints[0].y, splitLeafPoints[0].z);
@@ -150,8 +131,6 @@ void Leaf::drawGenericLeaf()
 	
 	fractals(start_index);
 	
-	// drawing the shape of the leaf by connecting the outer points 
-	// to the main stem to create the fold in the leaf
 	glBegin(GL_POLYGON);
 	glColor3f(0.184f, 0.409f, 0.184f);
 	int i = start_index;
@@ -186,7 +165,6 @@ void Leaf::drawGenericLeaf()
 	glVertex3f(splitLeafPoints[i].x, splitLeafPoints[i].y, splitLeafPoints[i].z);
 	glEnd();
 	
-	// Drawing the veins of the leaf
 	glBegin(GL_LINES);
 	for(int i = 1; i < 9; i+=3)
 	{
@@ -230,7 +208,6 @@ void Leaf::fractals(int n)
 		rightTemp.y = (rightTemp.y + y_delta);
 		splitLeafPoints.push_back(rightTemp);
 		
-		// stem
 		vec3 straightTemp = splitLeafPoints[n];
 		straightTemp.x = straightTemp.x; // moving up, not to the side
 		straightTemp.y = straightTemp.y + stem_length;
@@ -255,7 +232,6 @@ void Leaf::fractals(int n)
 		rightTemp.y = (rightTemp.y +  y_delta);
 		splitLeafPoints.push_back(rightTemp);
 		
-		// stem
 		vec3 straightTemp = splitLeafPoints[n];
 		straightTemp.x = straightTemp.x; // moving up, not to the side
 		straightTemp.y = straightTemp.y + stem_length;
