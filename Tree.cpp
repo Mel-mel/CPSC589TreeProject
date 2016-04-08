@@ -70,16 +70,6 @@ Tree::Tree(float height)
 	}
 }
 
-//This is the constructor for a tree (need to find the radius later. make into vec3 later)
-Tree::Tree(vec2 hBase, vec2 hTop, vec2 w1, vec2 w2)
-{
-	heightBase = hBase;
-	heightTop = hTop;
-	width1 = w1;
-	width2 = w2;
-	
-}
-
 void Tree::clearArray()
 {
 	treeNodes.clear();
