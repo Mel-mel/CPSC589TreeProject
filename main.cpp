@@ -37,19 +37,27 @@ Tree aTree;
 Leaf leaf;
 vector<glm::vec2> treeD;
 
+/*This is to initialize the tree once it gets the height input from the user.
+  It will call the spaceAlgorithm() function 100 times to generate a tree with 
+  slightly different branch patterns (although that particular part works sometimes)
+*/
 void treeSetup()
 {
 	if(initializeTree == true)
 		{
+			//Create a tree with height input from user
 			Tree aTree((treeD[1].y - treeD[0].y)*2);
 			aTree.initTrunk();
+			
+			//Generate the tree
 			for(int i = 0; i < 100; i++)
 			{
-				aTree.initTrunk();
-				aTree.genRandomBranch();
-				aTree.spaceAlgorithm();
+				aTree.initTrunk();		//Create the initial tree trunk
+				aTree.genRandomBranch();//Generate random branch points for tree to grow to
+				aTree.spaceAlgorithm();	//Create the tree based on branch points
 			}
 			
+			//Repeat one more time for just for the heck of it
 			aTree.genRandomBranch();
 			aTree.spaceAlgorithm();
 			initializeTree = false;
@@ -58,7 +66,7 @@ void treeSetup()
 	
 }
 
-// leaf span: could possibly use this variable to add slider for amount of leafyness
+// leaf span: could possibly use this variable to add slider for amount of leafiness
 void justLeaf()
 {
 	// close up view of one leaf
@@ -100,6 +108,7 @@ void firstStage()
 	aTree.drawTree(1, 1);
 }
 
+//Render the input given by the user. Two points and a line will show up
 void renderBasicHeight()
 {
 	glPointSize(10.0f);
@@ -107,7 +116,7 @@ void renderBasicHeight()
 	glBegin(GL_POINTS);
 	for(int i = 0, j = 1; i < treeD.size(); i++, j++)
 	{
-		glVertex2f(treeD[i].x, treeD[i].y);
+		glVertex2f(treeD[i].x, treeD[i].y);	//Render the points
 	}
 	glEnd();
 	
@@ -115,7 +124,7 @@ void renderBasicHeight()
 		if(treeD.size() >=2 )
 		{
 			glColor3f(1.0f, 0.8f, 0.2f);
-			glVertex2f(treeD[0].x, treeD[0].y);
+			glVertex2f(treeD[0].x, treeD[0].y);//Render the line
 			glVertex2f(treeD[1].x, treeD[1].y);
 		}
 	glEnd();
@@ -123,6 +132,7 @@ void renderBasicHeight()
 		
 }
 
+//Draw some text onto the screen. This will tell the user to click again to render the tree
 void textButton(int x_pos, int y_pos)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -137,52 +147,58 @@ void textButton(int x_pos, int y_pos)
   	}
 }
 
+/*This function renders the tree depending on the stage selected. The default stage that will be shown
+  is always stage one (with just the points). Based on keyboard input, the whole tree can be rotated
+  or scaled.
+*/
 void renderer () {
 	glEnable(GL_DEPTH_TEST); // for 3D
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
+	//Set rotations based on user input
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glTranslatef(xTranslate, yTranslate, 0.0f);
 	glRotatef(yRotate, 0.0f, 1.0f, 0.0f);//Rotate on the y axis
 	
-
+	//Set scaling based on user input
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(-zoom,zoom,-zoom,zoom,-zoom,zoom);
 	//glFrustum for perspective or GLU - gluPerspective
 	
+	
 	if(getDimensions == true)
 	{
 		if(doneDimensions == true)
 		{
-			textButton(-0.5f, -0.5f);
+			textButton(-0.5f, -0.5f);	//Render text right before rendering the tree
 		}
 		renderBasicHeight();
 	}
 	if(stageOne == true)
 	{
-		firstStage();
+		firstStage();	//Render just the points of the tree
 	} 
 	if(stageTwo == true)
 	{
-		secondStage();
+		secondStage();	//Render just points and lines of the tree
 	} 
 	if(stageThree == true)
 	{
-		thirdStage();
+		thirdStage();	//Render just the cylinders for the tree
 	}
 	if(stageFour == true)
 	{
-		fourthStage();
+		fourthStage();	//Render the cylinders and leaves
 	}
 	if(stageFive == true)
 	{
-		fifthStage();
+		fifthStage();	//The complete rendering of the tree
 	}
 	if(renderLeaf == true)
 	{
-		justLeaf();
+		justLeaf();		//Render just the leave to show a close up of it
 	}
 	
 	
@@ -272,6 +288,9 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 	}
 	if(key == GLFW_KEY_L && action == GLFW_PRESS)
 	{
+		//Disable lighting so that they don't interfere with drawing the other stages besides stage 5
+		glDisable(GL_LIGHTING);
+		glDisable(GL_LIGHT0);
 		zoom = 1;
 		yRotate = 0;
 		xTranslate = 0;
@@ -287,6 +306,7 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 	}
 	if(key == GLFW_KEY_1 && action == GLFW_PRESS)
 	{
+		//Disable lighting so that they don't interfere with drawing the other stages besides stage 5
 		glDisable(GL_LIGHTING);
 		glDisable(GL_LIGHT0);
 		if(treeD.empty())
@@ -315,6 +335,7 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 	}
 	if(key == GLFW_KEY_2 && action == GLFW_PRESS)
 	{
+		//Disable lighting so that they don't interfere with drawing the other stages besides stage 5
 		glDisable(GL_LIGHTING);
 		glDisable(GL_LIGHT0);
 		if(treeD.empty())
@@ -343,6 +364,7 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 	}
 	if(key == GLFW_KEY_3 && action == GLFW_PRESS)
 	{
+		//Disable lighting so that they don't interfere with drawing the other stages besides stage 5
 		glDisable(GL_LIGHTING);
 		glDisable(GL_LIGHT0);
 		if(treeD.empty())
@@ -370,6 +392,7 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 	}
 	if(key == GLFW_KEY_4 && action == GLFW_PRESS)
 	{
+		//Disable lighting so that they don't interfere with drawing the other stages besides stage 5
 		glDisable(GL_LIGHTING);
 		glDisable(GL_LIGHT0);
 		if(treeD.empty())
@@ -448,10 +471,11 @@ void mouseClick (GLFWwindow *sender, int button, int action, int mods) {
 	}
 }
 
+/*Get the mouse position from the user and scale it to screen coordinates
+*/
 void mousePosition(GLFWwindow *sender, double x, double y){
 	mouseX = (2 * (x/ w)) - 1;
 	mouseY = (-2 * (y / h)) + 1;
-
 }
 
 int main (int argc, char** argv) {
