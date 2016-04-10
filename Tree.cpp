@@ -68,9 +68,6 @@ void Tree::clearArray()
   Kelleher. C, (2008, July 30), Rendering a Cylinder Between Two Points in OpenGL, Accessed on Mar 17, 2016,
   Retrieved from http://lifeofaprogrammergeek.blogspot.ca/2008/07/rendering-cylinder-between-two-points.html
 */
-
-/*
-*/
 void Tree::renderCylinder(float x1, float y1, float z1, float x2,float y2, float z2, float radius,int subdivisions,GLUquadricObj *quadric)
 {
 	float vx = x2-x1;

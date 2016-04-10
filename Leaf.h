@@ -17,7 +17,5 @@ public:
 	void drawLeaf(float x, float y, float z);
 	void drawGenericLeaf();
 	void fractals(int n);
-	//void fractalsReverse(int n);
-	//void reverseArray();
-
+	
 };

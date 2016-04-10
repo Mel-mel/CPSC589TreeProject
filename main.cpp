@@ -1,3 +1,8 @@
+/*
+ * Final Project CPSC 589
+ * by: Claire Mikalauskas and Melissa Ta
+ */
+
 #include <GLFW/glfw3.h>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
@@ -21,7 +26,7 @@ float xTranslate = 0;
 float yTranslate = 0;
 int count = 0; // initial order of user input for dimensions
 float zoom = 1;
-std::string str = "Click again to render the tree!";
+std::string str = "Click again to see STAGE ONE!";
 bool getDimensions = true;
 bool doneDimensions = false;
 bool initializeTree = false;
@@ -90,13 +95,11 @@ void thirdStage()
 {
 	// draw the tree with cylinders
 	aTree.drawTree(3, 1);
-	//aTree.renderTreeStageThree();
 }
 
 void secondStage()
 {
 	// draw the tree as points and lines
-	//treeSetup();
 	aTree.drawTree(2, 1);
 }
 
@@ -165,8 +168,6 @@ void renderer () {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(-zoom,zoom,-zoom,zoom,-zoom,zoom);
-	//glFrustum for perspective or GLU - gluPerspective
-	
 	
 	if(getDimensions == true)
 	{
@@ -239,10 +240,12 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 	{
 		xTranslate = xTranslate + 0.1f;
 	}
+	//Zoom out 
 	if(key == GLFW_KEY_Z && (action == GLFW_PRESS || action == GLFW_REPEAT))
 	{
 		zoom += 0.1f;
 	}
+	//Zoom in
 	if(key == GLFW_KEY_X && (action == GLFW_PRESS || action == GLFW_REPEAT))
 	{
 		if(zoom > 0)
@@ -254,6 +257,7 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 			zoom = zoom;
 		}
 	}
+	//Less leaves
 	if(key == GLFW_KEY_N && (action == GLFW_PRESS || action == GLFW_REPEAT))
 	{
 		if(leaf_amount < 6)
@@ -261,6 +265,7 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 			leaf_amount++;
 		}
 	}
+	//More leaves
 	if(key == GLFW_KEY_M && (action == GLFW_PRESS || action == GLFW_REPEAT))
 	{
 		if(leaf_amount > 1)
@@ -268,6 +273,7 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 			leaf_amount--;
 		}
 	}
+	//Reset back to giving the height of the tree
 	if(key == GLFW_KEY_R && action == GLFW_PRESS)
 	{
 		treeD.clear();
@@ -286,6 +292,7 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 		stageFive = false;
 		renderLeaf = false;
 	}
+	//View a generic leaf up close
 	if(key == GLFW_KEY_L && action == GLFW_PRESS)
 	{
 		//Disable lighting so that they don't interfere with drawing the other stages besides stage 5
@@ -304,6 +311,7 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 		stageFive = false;
 		renderLeaf = true;
 	}
+	//Stage one
 	if(key == GLFW_KEY_1 && action == GLFW_PRESS)
 	{
 		//Disable lighting so that they don't interfere with drawing the other stages besides stage 5
@@ -322,7 +330,6 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 		}
 		else
 		{
-			zoom =11.8;
 			getDimensions = false;
 			doneDimensions = false;
 			stageOne = true;
@@ -333,6 +340,7 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 			renderLeaf = false;
 		}
 	}
+	//Stage two
 	if(key == GLFW_KEY_2 && action == GLFW_PRESS)
 	{
 		//Disable lighting so that they don't interfere with drawing the other stages besides stage 5
@@ -351,7 +359,6 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 		}
 		else
 		{
-			zoom = 11.8;
 			getDimensions = false;
 			doneDimensions = false;
 			stageOne = false;
@@ -362,6 +369,7 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 			renderLeaf = false;
 		}
 	}
+	//Stage three
 	if(key == GLFW_KEY_3 && action == GLFW_PRESS)
 	{
 		//Disable lighting so that they don't interfere with drawing the other stages besides stage 5
@@ -390,6 +398,7 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 			renderLeaf = false;
 		}
 	}
+	//Stage four
 	if(key == GLFW_KEY_4 && action == GLFW_PRESS)
 	{
 		//Disable lighting so that they don't interfere with drawing the other stages besides stage 5
@@ -408,7 +417,6 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 		}
 		else
 		{
-			zoom = 11.8;
 			getDimensions = false;
 			doneDimensions = false;
 			stageOne = false;
@@ -419,6 +427,7 @@ void keyboard(GLFWwindow *sender, int key, int scancode, int action, int mods) {
 			renderLeaf = false;
 		}
 	}
+	//Stage five
 	if(key == GLFW_KEY_5 && action == GLFW_PRESS)
 	{
 		if(treeD.empty())
