@@ -1,0 +1,32 @@
+Space Colonization Tree and Fractal Leaves Program
+
+
+Files needed should contain the following:
+
+Makefile
+main.cpp
+Leaf.cpp
+Leaf.h
+Tree.cpp
+Tree.h
+
+How to compile the program:
+-Inside the folder that contain the above files, type this in:
+	make clean
+	make
+	./tree
+	
+How to use the program:
+- Left click the screen twice to input a height
+- Press O or P to rotate the tree
+- Press Z or X to zoom in or out on the tree
+- Press N or M to change the leafiness on the tree for stage 5 only
+- Press R to reset the program
+- Press the arrow keys to move the tree up, down, left, or right
+- Press L to show a close up of the leaf
+	-Same controls for zooming, scaling, and moving apply here as well
+- Press 1 for stage 1 (points)
+- Press 2 for stage 2 (points and lines)
+- Press 3 for stage 3 (cylinders)
+- Press 4 for stage 4 (cylinders with leaves)
+- Press 5 for stage 5 (cylinders with leaves and basic lighting/shading)
