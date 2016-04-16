@@ -36,7 +36,7 @@ vector<glm::vec3> neighbors; 	//Contains only branch points (from user input?)
 vector<glm::vec3> randBranch;	//Contains random branch points to allow the tree to grow branches
 vector<glm::vec3> leaves;		//Holds new leaf positions to be used in rendering the leaves
 vector<branches> treeNodes;		//Contains tree nodes generated from the space algorithm
-
+vector<glm::vec3> branchPoints;	//Contains all the branch points. Just used to draw them onto the screen
 GLUquadricObj *quadratic;		//This is used for drawing cylinders
 
 Tree::Tree()
@@ -60,6 +60,7 @@ void Tree::clearArray()
 {
 	treeNodes.clear();
 	leaves.clear();
+	branchPoints.clear();
 }
 
 
@@ -139,7 +140,7 @@ void Tree::genRandomBranch()
 			 randY += 1.0f;
 		}
         randBranch.push_back({ randX, randY, randZ });
-        
+        branchPoints.push_back({randX, randY, randZ });
         srand(i+2);
       //  cout << randX << " " << randY << " " << randZ << endl;
     }
@@ -152,6 +153,16 @@ void Tree::drawTree(int stage, int leafiness)
 	//Render only the points of the tree
 	if(stage == 1)
 	{
+		//Render the branch points
+		glBegin(GL_POINTS);
+		for(int k = 0; k < branchPoints.size(); k++)
+		{
+			glColor3f(0.3f, 0.3f, 0.3f);
+			glVertex3f(branchPoints[k].x, branchPoints[k].y, branchPoints[k].z);
+		}
+		glEnd();
+		
+		//Render the tree points
 		glBegin(GL_POINTS);
 		for(int i = 0; i < treeNodes.size(); i++)
 		{
@@ -191,22 +202,52 @@ void Tree::drawTree(int stage, int leafiness)
 	//Drawing the cylinders onto the tree to give it a thickness. No leaves are generated here.
 	if(stage == 3)
 	{
+		float num = treeNodes.size() / 3;
+		float size = 0.2;
 		for(int i = 0; i < treeNodes.size(); i++)
 		{
 			glColor3f(0.5f, 0.4f, 0.2f);
-			renderCylinder_convenient(treeNodes[i].p1.x, treeNodes[i].p1.y, treeNodes[i].p1.z, treeNodes[i].p2.x, treeNodes[i].p2.y, treeNodes[i].p2.z, 0.07f, 10.0f); 
+			if(0 <= i && i <= 20)
+			{
+				renderCylinder_convenient(treeNodes[i].p1.x, treeNodes[i].p1.y, treeNodes[i].p1.z, treeNodes[i].p2.x, treeNodes[i].p2.y, treeNodes[i].p2.z, size, 10.0f); 
+				size -= 0.001;
+			}
+			else if(21 <= i && i <= num * 2)
+			{
+				renderCylinder_convenient(treeNodes[i].p1.x, treeNodes[i].p1.y, treeNodes[i].p1.z, treeNodes[i].p2.x, treeNodes[i].p2.y, treeNodes[i].p2.z, size, 10.0f); 
+				size -= 0.001;
+			}
+			else if((num*2 + 1 <= i) && i <= treeNodes.size())
+			{
+				renderCylinder_convenient(treeNodes[i].p1.x, treeNodes[i].p1.y, treeNodes[i].p1.z, treeNodes[i].p2.x, treeNodes[i].p2.y, treeNodes[i].p2.z, size, 10.0f); 
+				size -= 0.001;
+			}
 		}
 	}
 	
 	//Render the cylinders and leaves onto the tree.
 	if(stage == 4)
 	{
-		//Render the cylinders
-		glBegin(GL_LINES);
+		float num = treeNodes.size() / 3;
+		float size = 0.2;
 		for(int i = 0; i < treeNodes.size(); i++)
 		{
 			glColor3f(0.5f, 0.4f, 0.2f);
-			renderCylinder_convenient(treeNodes[i].p1.x, treeNodes[i].p1.y, treeNodes[i].p1.z, treeNodes[i].p2.x, treeNodes[i].p2.y, treeNodes[i].p2.z, 0.07f, 10.0f); 
+			if(0 <= i && i <= 20)
+			{
+				renderCylinder_convenient(treeNodes[i].p1.x, treeNodes[i].p1.y, treeNodes[i].p1.z, treeNodes[i].p2.x, treeNodes[i].p2.y, treeNodes[i].p2.z, size, 10.0f); 
+				size -= 0.001;
+			}
+			else if(21 <= i && i <= num * 2)
+			{
+				renderCylinder_convenient(treeNodes[i].p1.x, treeNodes[i].p1.y, treeNodes[i].p1.z, treeNodes[i].p2.x, treeNodes[i].p2.y, treeNodes[i].p2.z, size, 10.0f); 
+				size -= 0.001;
+			}
+			else if((num*2 + 1 <= i) && i <= treeNodes.size())
+			{
+				renderCylinder_convenient(treeNodes[i].p1.x, treeNodes[i].p1.y, treeNodes[i].p1.z, treeNodes[i].p2.x, treeNodes[i].p2.y, treeNodes[i].p2.z, size, 10.0f); 
+				size -= 0.001;
+			}
 		}
 		
 		//Render the leaves onto the tree
@@ -249,12 +290,27 @@ void Tree::drawTree(int stage, int leafiness)
 		glFlush ();
 		
 		//Render the cylinders (the color for the cylinder is already set above)
-		glBegin(GL_LINES);
+		float num = treeNodes.size() / 3;
+		float size = 0.2;
 		for(int i = 0; i < treeNodes.size(); i++)
 		{
-			renderCylinder_convenient(treeNodes[i].p1.x, treeNodes[i].p1.y, treeNodes[i].p1.z, treeNodes[i].p2.x, treeNodes[i].p2.y, treeNodes[i].p2.z, 0.08f, 10.0f); 
-		}	
-		glEnd();
+			glColor3f(0.5f, 0.4f, 0.2f);
+			if(0 <= i && i <= 20)
+			{
+				renderCylinder_convenient(treeNodes[i].p1.x, treeNodes[i].p1.y, treeNodes[i].p1.z, treeNodes[i].p2.x, treeNodes[i].p2.y, treeNodes[i].p2.z, size, 10.0f); 
+				size -= 0.001;
+			}
+			else if(21 <= i && i <= num * 2)
+			{
+				renderCylinder_convenient(treeNodes[i].p1.x, treeNodes[i].p1.y, treeNodes[i].p1.z, treeNodes[i].p2.x, treeNodes[i].p2.y, treeNodes[i].p2.z, size, 10.0f); 
+				size -= 0.001;
+			}
+			else if((num*2 + 1 <= i) && i <= treeNodes.size())
+			{
+				renderCylinder_convenient(treeNodes[i].p1.x, treeNodes[i].p1.y, treeNodes[i].p1.z, treeNodes[i].p2.x, treeNodes[i].p2.y, treeNodes[i].p2.z, size, 10.0f); 
+				size -= 0.001;
+			}
+		}
 		
 		//Disable the lighting for the leaves so that the leaves stay green
 		glDisable(GL_LIGHTING);
