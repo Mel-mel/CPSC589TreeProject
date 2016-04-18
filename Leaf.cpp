@@ -53,7 +53,7 @@ void Leaf::drawLeaf(float x, float y, float z)
 	glEnd();
 	
 	//Generating all the points before we draw them
-	fractals(start_index);
+	makePoints(start_index);
 	
 	/*
 	 * Drawing the main shape of the leaf from the given start index, 
@@ -145,7 +145,7 @@ void Leaf::drawGenericLeaf()
 	glEnd();
 	
 	//Generating all the points before we draw them
-	fractals(start_index);
+	makePoints(start_index);
 	
 	/*
 	 * Drawing the main shape of the leaf from the given start index, 
@@ -213,7 +213,7 @@ void Leaf::drawGenericLeaf()
 	
 	splitLeafPoints.clear();
 }
-void Leaf::fractals(int n)
+void Leaf::makePoints(int n)
 {	
 	if(n == num_recursion)
 	{
@@ -267,7 +267,7 @@ void Leaf::fractals(int n)
 		//The left and right veins do not have futher 
 		//lines coming from them so we skip to the next 
 		//main portion of the stem
-		fractals(n+3);
+		makePoints(n+3);
 	}
 }
 

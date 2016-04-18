@@ -16,6 +16,6 @@ public:
 	Leaf();
 	void drawLeaf(float x, float y, float z);
 	void drawGenericLeaf();
-	void fractals(int n);
+	void makePoints(int n);
 	
 };
